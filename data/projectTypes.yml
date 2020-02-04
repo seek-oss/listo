@@ -1,0 +1,5 @@
+- name: api
+  modules:
+  - "code/authentication"
+- name: frontend
+- name: worker

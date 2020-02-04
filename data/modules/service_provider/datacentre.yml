@@ -1,0 +1,8 @@
+category: Service Provider
+description: Will you be deploying your application outside of our AWS Org (i.e. Datacentre)?
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We thought about it, and decided to deploy into AWS instead.
+tags: WebApp
+title: Datacentre

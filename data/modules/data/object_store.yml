@@ -1,0 +1,8 @@
+category: Data
+description: We will be using data in simple object store (i.e. S3)
+minimumRisk: Low Risk
+checkLists:
+  S3:
+  - question: If our bucket is publicly accessible, we have tagged it according to the [Public S3 Bucket Tagging Policy RFC]().
+tags: WebApp, API, Worker
+title: Object Storage

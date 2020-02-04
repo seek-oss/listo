@@ -1,0 +1,16 @@
+category: Software Environment
+description: Will your team need to manage servers (EC2/VM/Physical) to deploy your application?
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We have hardened our servers using the [Runtime Protection – Infrastructure Hardening and Patching]() guidance.
+    tools:
+      - Gantry
+      - EBB
+      - GAMI
+  - question: We have patched our servers (except for valid and approved exceptions) using the [Runtime Protection – Infrastructure Hardening and Patching]() guidance.
+  - question: We are logging security relevent OS server events. Using [GAMI]() will enable the appropriate logging for you.
+resources:
+  - "[Runtime Protection – Infrastructure Hardening and Patching]()"
+tags: WebApp, API, Worker
+title: Servers

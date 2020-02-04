@@ -1,0 +1,15 @@
+category: General
+description: Are you implementing or modifying a service?
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: >
+      We have looked through [RFC010 Domains]()
+      to determine the most appropriate domain for our service
+  - question: Our service is accepting traffic as per the guidance in the [Ingress RFC]().
+  - question: >
+      We have implemented DoS and runtime blocking (WAF), in compliance
+      with the [RFC Runtime Protection and Monitoring]().
+  - question: We have added authentication to our service as per [RFC008 - Application Authentication]().
+tags: WebApp, API, Worker
+title: Services

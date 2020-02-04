@@ -1,0 +1,19 @@
+category: Code
+description: Is your functionality exposed within a web browser and implementing requests
+  that make sensitive user changes (e.g. password change, CV upload, send message,
+  etc)?
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We are using the built-in anti-CSRF framework for our form and action functionality.
+  - question: Every action in our functionality that makes sensitive user changes (e.g. password change, CV upload, send message, etc), is protected by an anti-CSRF token.
+  Client:
+  - question: If not already built-in to your anti-CSRF framework, authenticated XHR requests contain a [custom header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Simple_requests) (ie. Authorization).
+  API:
+  - question: "[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) policy either not required or restricted to UI origin and minimum required methods, headers and credentials."
+  - question: Authenticated requests not containing a custom header (ie. Authorization) [respond with 400 Bad Request](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#Protecting_REST_Services:_Use_of_Custom_Request_Headers)  .
+resources:
+  - "[OWASP CSRF Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)."
+  - "[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)."
+tags: WebApp, API
+title: CSRF

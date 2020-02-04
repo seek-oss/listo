@@ -1,0 +1,21 @@
+category: General
+description: Guidance that all projects need to follow.
+minimumRisk: Low Risk
+checkLists:
+  Upgradability:
+  - question: There is a commitment and plan for upgrading, patching, and ongoing maintenance for this project.
+  - question: We have the ability to upgrade this functionality and it's libraries within 3 days if a security issue is identified.
+  Build & Deploy:
+  - question: We are using Buildkite to build and deploy our systems [as per our CI/CD guidance]().
+    tools:
+      - Buildkite
+  - question: We are storing and managing our source code as per the guidance within [RFC003 - Source Control - GitHub]().
+  Security:
+  - question: We have discussed with the security team if a pen test, code or security architecture review should be performed on this component or project.
+  - question: We understand our commitments of being in scope of our [Bug Bounty Program](https://bugcrowd.com/seek).
+  - question: We have reviewed and remediated our open security vulnerabilities [as per the open Jira issues here]().
+  - question: We have checked for dead code, and deleted it. Less code = fewer bugs!
+  - question: Error messages (debug, callstack, etc) don't [leak sensitive information]() to a user.
+  - question: We are managing our secrets (app, deploy, infra, etc) as per [RFC007 - Secrets Management - Securing Sensitive Secrets]().
+tags: WebApp, API, Workers, iOS, Android
+title: General Guidance

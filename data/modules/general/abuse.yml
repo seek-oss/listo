@@ -1,0 +1,8 @@
+category: General
+description: Guidance related to product malicious abuse
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We assume customer accounts will be broken into and have solutions in place to minimise the user impact.
+tags: WebApp, API, Worker, iOS, Android
+title: Abuse

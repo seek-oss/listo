@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  listo:
+    image: listo
+    build: .
+    environment:
+      - DYNAMO_DB_ENDPOINT=http://database:8000
+      - DATA_DIR=/etc/listo/data
+      - CREATE_DYNAMO_TABLES=true
+      - AWS_ACCESS_KEY_ID
+      - AWS_SESSION_TOKEN
+      - AWS_SECRET_ACCESS_KEY
+      - TRELLO_API_KEY
+      - TRELLO_TOKEN
+      - TRELLO_TEAM
+      - TRELLO_BOARD_LINK
+      - SLACK_CHANNEL_LINK
+      - SLACK_TARGET_CHANNEL
+    volumes:
+        - ./data:/etc/listo/data:ro
+    ports:
+      - 8000:8000
+    links:
+      - database
+
+  database:
+    image: amazon/dynamodb-local
+    ports:
+      - 8000

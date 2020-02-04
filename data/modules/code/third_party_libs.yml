@@ -1,0 +1,22 @@
+category: Code
+description: Does your project introduce or utilize a third-party library or service?
+minimumRisk: Medium Risk
+checkLists:
+  General:
+  - question: We are utilizing the latest stable version of our libraries by using [Renovate](https://github.com/apps/renovate) to keep them updated (reach out in '#github').
+    tools:
+      - Renovate
+  Library:
+  - question: We have enabled [Snyk]() for all supported services.
+    tools:
+      - Snyk
+  - question: We have followed secure vetting practices before using open source components [as per the guidance here]().
+  - question: We have remediated all fixable High severity vulnerabilities [as per the guidance here]().
+  - question: We have read and comply with the [Open Source Dependency Management RFC]().
+  Service:
+  - question: We have reached out in '#security' to request a third party vendor risk review for commercial services that have access to or store sensitive data.
+resources:
+  - "[OWASP Vulnerable Dependency Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Vulnerable_Dependency_Management_Cheat_Sheet.html)."
+  - "[Vendor Risk Management](https://searchcio.techtarget.com/definition/Vendor-risk-management)."
+tags: WebApp, API, iOS, Android, Worker
+title: Third-Party Libraries & Services

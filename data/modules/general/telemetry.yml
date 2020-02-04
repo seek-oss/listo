@@ -1,0 +1,25 @@
+category: General
+description: Guidance related to application telemetry data and monitoring
+minimumRisk: Low Risk
+checkLists:
+  Logging:
+  - question: We log important system events at appropriate log levels to help with debugging code.
+  - question: >
+      We log to stdout and use [our central log forwarding service]()
+      to ship our logs as per [RFC Logging Standard]().
+    tools:
+      - Gantry
+  - question: We use a structured logging format that is machine parsable. As per [RFC Logging Standard]().
+  - question: We do not log sensitive customer or system information (like auth headers).
+  Monitoring:
+  - question: >
+      We have configured monitoring tools mentioned in the [Application Monitoring and Alerting RFC]().
+  - question: >
+      We have configured [Pager Duty](https://pagerduty.com) or a similar
+      on-call tool to be triggered from actionable monitoring alerts.
+  Tracing:
+  - question: >
+      We have read [RFC002 - Request Ids]()
+      and understand how to link requests for tracing purposes.
+tags: WebApp, API, Worker, iOS, Android
+title: Monitoring

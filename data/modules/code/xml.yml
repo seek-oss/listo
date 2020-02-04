@@ -1,0 +1,16 @@
+category: Code
+description: Does your code work with, write or read XML (including file formats like Word and PDF)?
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We are validating user-supplied XML with a schema doc before working on it.
+  - question: >
+      We have disabled all routes to [XML External Entity processing](https://www.owasp.org/index.php/XML_External_Entity_%28XXE%29_Processing)
+      at the parser level.
+  - question: If using a third party XML parser (including parsing XML based documents like Word).
+resources:
+  - "[XML external entity (XXE) injection](https://portswigger.net/web-security/xxe)."
+  - "[What Are XXE Attacks](https://www.acunetix.com/blog/articles/xml-external-entity-xxe-vulnerabilities/)."
+  - "[OWASP XXE Prevention](https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html)."
+tags: WebApp, API, iOS, Android, Worker
+title: XML

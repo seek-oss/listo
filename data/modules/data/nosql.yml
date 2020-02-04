@@ -1,0 +1,18 @@
+category: Data
+description: We will be using a NoSQL database to store data (e.g Dynamo or Mongo)
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We have taken steps to prevent [NoSQL injection attacks](http://www.petecorey.com/blog/2017/07/03/what-is-nosql-injection/).
+  DynamoDB:
+  - question: We have configured a sensible provisioning strategy based on our expected throughput.
+  - question: We have [designed our partition keys](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html) to ensure workloads are evenly distributed.
+  - question: We have carefully considered our expected [access patterns](https://youtu.be/HaEPXoXVf2k) and have incorporated this into our key design.
+  - question: We have a sensible [back-up](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Backup.Tutorial.html) strategy in place.
+resources:
+  - "[DynamoDB Injection](https://medium.com/appsecengineer/dynamodb-injection-1db99c2454ac)."
+  - "[MongoDB Injection Attacks](https://blog.sqreen.com/mongodb-will-not-prevent-nosql-injections-in-your-node-js-app/)."
+  - "[MongoDB Injection Prevention](https://blog.sqreen.com/prevent-nosql-injections-mongodb-node-js/)."
+  - "[Best Practices for DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)."
+tags: WebApp, API, Worker
+title: NoSQL Databases

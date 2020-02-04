@@ -1,0 +1,16 @@
+category: Code
+description: Concerns the consumption or publication of internal shared libraries
+minimumRisk: Medium Risk
+checkLists:
+  General:
+  - question: We have a process or tool for updating our external and internal dependencies to the latest stable version (i.e. [Renovate](https://github.com/apps/renovate) and [Upkeep]()).
+    tools:
+      - Renovate
+      - Upkeep
+  - question: We have contacted the owners of internal libraries to ensure our use case is appropriate.
+  NPM:
+  - question: >
+      We have read [RFC009 - npm]() concerning
+      proper usage of our NPM organisation.
+tags: WebApp, API, Worker, iOS, Android
+title: Internal Libraries

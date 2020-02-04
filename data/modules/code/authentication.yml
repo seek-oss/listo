@@ -1,0 +1,27 @@
+category: Code
+description: Does your code authenticate or authorize users, tokens, sessions, or other?
+minimumRisk: Low Risk
+checkLists:
+  Authentication:
+  - question: We are only using preferred auth protocols and patterns stated within [RFC018 - Authentication Protocols]().
+    tools:
+      - Auth Sidecar
+      - Auth0
+  - question: We are managing authentication secrets as per [RFC007 - Secrets Management - Securing Sensitive Secrets]().
+  Cookies:
+  - question: We have forced the use of the `secure` and `HttpOnly` flags if possible.
+    tools:
+      - Auth0
+  - question: We have ensured that the `domain` being set on this cookie is tightly-scoped.
+  - question: We are not using cookies to store customer PII.
+    tools:
+      - Auth0
+  Login Flows:
+  - question: We are blocking and monitoring for authentication specific attacks such as brute-force and credential stuffing.
+    tools:
+      - Auth0
+resources:
+  - "[ASVS - Authentication Verification Requirements](https://github.com/OWASP/ASVS/blob/master/4.0/en/0x11-V2-Authentication.md)."
+  - "[OWASP Auth Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)."
+tags: WebApp, API, iOS, Android, Worker
+title: Authentication

@@ -1,0 +1,14 @@
+category: Data
+description: We will make use of Relation Database Systems for persistent storage
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We have taken steps to prevent [SQL injection vulnerabilities](https://www.acunetix.com/websitesecurity/sql-injection/)
+  Amazon RDS:
+  - question: We have considered using Amazon Aurora.
+  - question: We have setup read-replicas and backups.
+  - question: We ensure our replicas are properly spread across AZs.
+resources:
+  - "[SQL Injection Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)."
+tags: WebApp, API, Worker
+title: Relational Database

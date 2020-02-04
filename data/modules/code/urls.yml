@@ -1,0 +1,21 @@
+category: Code
+description: Does your component build, parse, read or write URL's or redirect users to another URL?
+minimumRisk: Medium Risk
+checkLists:
+  General:
+  - question: We are using a well supported url library to load and verify every url before operating on it.
+  - question: >
+      We have looked into ways to avoid directing users to arbitrary urls, especially
+      those that are user-controlled (Open Redirect).
+  - question: >
+      We know what type of scheme (http/https/ftp) we are expecting, so we are guaranteeing
+      that the scheme is being parsed, and validated correctly.
+  SSRF:
+  - question: We have configured a whitelist of resources or systems (i.e. URL's, files, etc) to which the server can send requests or load data/files from.
+resources:
+  - "[OWASP Unvalidated Redirects and Forwards](https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html)."
+  - "[OWASP ASVS V5 - Validation, Sanitization and Encoding Verification Requirements](https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md)."
+  - "[Server Side Request Forgery(SSRF)](https://www.acunetix.com/blog/articles/server-side-request-forgery-vulnerability/)."
+  - "[OWASP SSRF Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)."
+tags: WebApp, API, iOS, Android
+title: URL Parsing & Redirect

@@ -1,0 +1,12 @@
+category: Code
+description: Do you intend for this library or project to be open sourced?
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: We have read and are compliance with [RFC016 - Open-Source]().
+  - question: We have selected an appropriate licence ([RFC016 - Open-Source]())?
+  - question: Have you ensured no secrets are stored in the project source code and history as per ([RFC016 - Open-Source]())?
+  - question: Have you ensured no sensitive corporate information is stored in the project source code?
+  - question: Have you let the community know and are they comfortable about your intention within the '#open-source' channel?
+tags: WebApp, API, Workers, iOS, Android
+title: Open Source Compliance

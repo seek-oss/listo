@@ -1,0 +1,25 @@
+category: Code
+description: We are rendering user-originated content via the DOM or reflecting it from the server
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: >
+      We are using standardized formatting libraries for all output of user-provided
+      data.
+  - question: >
+      'We are using proper `Content-Type` headers when rendering content.  e.g. `JSON`
+      should be served with Content-Type: application/json'.
+  - question: User input is not echoed or output unencoded on the page.
+  - question: >
+      We have tested user input with some XSS test payloads to ensure there is no XSS
+      present.
+  DOM:
+  - question: >
+      We are using the javascript formatting library to properly encode all user-provided
+      data to protect against [DOM based XSS](https://www.owasp.org/index.php/DOM_Based_XSS).
+resources:
+  - "[OWASP ASVS V5 - Validation, Sanitization and Encoding Verification Requirements](https://github.com/OWASP/ASVS/blob/master/4.0/en/0x13-V5-Validation-Sanitization-Encoding.md)."
+  - "[OWASP Cross Site Scripting Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)."
+  - "[OWASP DOM Based XSS Prevention](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)."
+tags: WebApp, API
+title: XSS

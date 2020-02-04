@@ -1,0 +1,17 @@
+category: Code
+description: Does your code need to control access between different users or roles?
+minimumRisk: Low Risk
+checkLists:
+  Access Control:
+  - question: >
+      We have ensured that difference user roles (regular, admin, etc)
+      can only access what is intended.
+  - question: >
+      We have checked that customers can only access data that is intended for them and
+      have checked our code for [IDOR](https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html) vulnerabilities.
+resources:
+  - "[ASVS - Access Control](https://github.com/OWASP/ASVS/blob/master/4.0/en/0x12-V4-Access-Control.md)."
+  - "[OWASP IDOR Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html)."
+  - "[Access Control Verification Requirements](https://cheatsheetseries.owasp.org/cheatsheets/IndexASVS.html#v41-general-access-control-design)."
+tags: WebApp, API, iOS, Android, Worker
+title: Authorisation

@@ -1,0 +1,21 @@
+category: Service Provider
+description: Will you be deploying your application within AWS
+minimumRisk: Low Risk
+checkLists:
+  General:
+  - question: Our AWS account has been properly provisioned via our account creation process.
+  - question: >
+      We have used our internal [VPC Template]()
+      to create a VPC with sensible defaults.
+  - question: >
+      We are using either [Trusted Advisor](https://console.aws.amazon.com/trustedadvisor/) to identify issues (cost, security,
+      performance, etc) within our AWS account.
+  - question: We have triaged and created a remediation plan for all high and critical vulnerabilities.
+  - question: We have completed the [Well Architected Framework](https://console.aws.amazon.com/wellarchitected/home)
+  IAM Roles:
+  - question: We have read and comply with [RFC005 - AWS IAM Users Standard]()
+  - question: We employ the [principle of least privilege](https://searchsecurity.techtarget.com/definition/principle-of-least-privilege-POLP) when deciding what access to give to roles and policies within our account.
+resources:
+  - "[Well Architected Framework](https://console.aws.amazon.com/wellarchitected/home)."
+tags: WebApp, API, Worker
+title: AWS

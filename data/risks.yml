@@ -1,0 +1,46 @@
+questions:
+- text: Do you want supporting teams such as Security and Architecture to reach out throughout the project?
+  description: 'If you think the project is risky and want help from Security from the
+    beginning: trust your gut. We''ll be involved and help however we can.'
+  options:
+  - text: 'Yes'
+    risk: High Risk
+  - text: 'No'
+
+- text: Does this project make any major security related changes or implement new authentication controls?
+  description: Say "yes" if this project adds new ways for people to authenticate,
+    adds to or changes existing security controls, or otherwise explicitly implements
+    security/privacy features.
+  options:
+  - text: 'Yes'
+    risk: High Risk
+  - text: 'No'
+
+- text: Is the target for this project a prototype, internal-only, or a full, productionized, public launch?
+  description: ''
+  options:
+  - text: Prototype or internal-only
+    risk: Low Risk
+  - text: Public launch
+
+- text: Will this project store, access or process sensitive customer data (PII)
+  description: Customer Data is the most sensitive type of data, such as the contents of CV's, messages, etc.
+  options:
+  - text: 'No'
+    risk: Low Risk
+  - text: Yes, this project will store, access or process sensitive customer data
+
+- text: Is this project highly important strategically?
+  description: Is this project one of our top priorities, one with major implications for our business, or otherwise highly strategic?
+  options:
+  - text: 'Yes'
+    risk: Medium Risk
+  - text: 'No'
+
+- text: Is this a change/update to an existing component, or a completely new project?
+  description: ''
+  options:
+  - risk: High Risk
+    text: New Component
+  - risk: Medium Risk
+    text: A change to an existing component

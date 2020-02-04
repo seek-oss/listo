@@ -1,0 +1,22 @@
+category: Data
+description: General guidelines for storing persistent data
+minimumRisk: High Risk
+checkLists:
+  General:
+    - question: All data stores are not accessible to the public internet, unless this is intended.
+    - question: We only store our Data for as long as it's required (i.e. we have a data retention policy setup).
+    - question: All data is encrypted at rest, where possible.
+    - question: We have considered how to provide sensible access control to customers, database users and systems, [via the principle of least privilege](https://searchsecurity.techtarget.com/definition/principle-of-least-privilege-POLP).
+    - question: We have setup [audit logs](https://logz.io/blog/audit-logs-security-compliance/) and are forwarding them via our central log forwarder.
+    - question: We have read the [Data Classification Policy]() to determine if our data is classified as sensitive.
+  Sensitive_Data:
+    - question: Data is encrypted at rest and in flight.
+    - question: Data is anonymised before it's sent to consuming services that do not require it.
+    - question: Not stored in any non-production environments.
+    - question: Tagged according to the [Data Tagging RFC]().
+    - question: Complies with the [Data Handling Standard]().
+resources:
+  - "[Using Audit Logs for Security and Compliance](https://logz.io/blog/audit-logs-security-compliance/)."
+  - "[Data Retention Policies](https://searchdatabackup.techtarget.com/definition/data-retention-policy)."
+tags: WebApp, API, iOS, Android, Worker
+title: General

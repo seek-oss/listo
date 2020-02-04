@@ -1,0 +1,29 @@
+{
+  "name": "listo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "server"
+  ],
+  "description": "Use questionnaires and checklists to make it easy to do the right thing, regarding the software you build.",
+  "repository": "https://github.com/SEEK-OSS/listo.git",
+  "devDependencies": {
+    "@types/node": "^12.11.7",
+    "@types/react": "^16.9.2",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.4.3",
+    "prettier": "^1.19.1"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,tsx,yaml}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}

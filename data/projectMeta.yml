@@ -1,0 +1,25 @@
+- name: boardName
+  placeholder: 'Feature X or Product Y'
+  required: true
+  label: The feature or product you want to assess
+  type: input
+- name: slackTeam
+  placeholder: '#myteam'
+  required: true
+  label: Your teams Slack channel
+  type: input
+- name: slackUserName
+  placeholder: '@name'
+  required: true
+  label: Your Slack Username
+  type: input
+- name: codeLocation
+  placeholder: https:// (link to code or documentation)
+  required: false
+  label: A link to find out more (code or documentation)
+  type: input
+- name: trelloEmail
+  placeholder: 'mytrello@email.com'
+  required: true
+  label: The email address of your Trello account
+  type: input

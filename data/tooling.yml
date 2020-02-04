@@ -1,0 +1,35 @@
+Execution:
+  Gantry:
+    description: >
+      Gantry is the tool for managing containerised workloads on AWS. It allows development teams to build and deploy services in a way that is secure, reliable, well-monitored, consistent, and in accordance with our RFCs. More info [here]().
+  EBB:
+    description: > 
+      EBB is a way of deploying your dockerised web apps to AWS using Elasticbeanstalk.
+    warning: "Should not be used for new projects"
+  GAMI:
+    description: > 
+      Our Golden AMI's are a set of patched and security hardened AWS AMI's that are distributed into all AWS account (built weekly) within all deployable regions.
+Deployment:
+  Buildkite:
+    description: >
+       We use [Buildkite]() as our preferred CI/CD platform.
+  Teamcity:
+    description: Teamcity is an outdated CI/CD process, it is now mostly used for legacy Windows builds.
+    warning: "Should not be used for new projects"
+Security:
+  Snyk:
+    description: > 
+      Snyk is a tool for finding and fixing vulnerabilities in open source third party dependencies (libraries).
+  Renovate:
+    description: > 
+      [Renovate](https://github.com/renovatebot/renovate) is a Github tool for automatic dependency update, and is multi-platform and multi-language. It opens PRs when your dependencies become out of date. Ask in the #github channel for access.
+  Upkeep:
+    description: >
+      Upkeep is a webapp for keeping track of maintenance of your Github projects. Ask in the #upkeep channel for questions.
+Authentication:
+  Auth Sidecar:
+    description: >
+      A Docker sidecar for handling authentication patterns that comply with the Authentication Protocols RFC. More info here.
+  Auth0:
+    description: >
+      Auth0 is the identity platform that we have chosen for our customers. It provides several features that allow for a more secure authentication experience.  
