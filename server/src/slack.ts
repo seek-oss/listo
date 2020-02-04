@@ -26,8 +26,8 @@ async function getSlackWebHook() {
 }
 
 export async function sendMessage(message: string): Promise<any> {
-  const { SLACK_WEB_HOOK, SLACK_TARGET_CHANNEL } = process.env;
-  if (!SLACK_TARGET_CHANNEL || !SLACK_WEB_HOOK) {
+  const { SLACK_WEB_HOOK, WEBHOOK_SECRET_ID } = process.env;
+  if (!SLACK_WEB_HOOK && !WEBHOOK_SECRET_ID) {
     console.log(`Slack alert ${prepareSlackMessage(message)}`);
     return;
   }
