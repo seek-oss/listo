@@ -3,18 +3,17 @@
 
 Use questionnaires and checklists to make it easy to do the right thing, regarding the software you build.
 
-
 ## About
 
 Checklists are at the heart of Listo, empowering engineering teams to perform a web-based self-assessment, which results in a Trello board containing the essential security, reliability and architecture requirements from our RFCs, tailored to a project's objectives. 
 
-> A more detailed blog post can be found [on SEEK's Tech Blog](INSERT LINK).
+A more detailed blog post can be found [on SEEK's Tech Blog](INSERT LINK).
 
 ## Getting Listo Running Locally
 
 The quickest way to get Listo running locally is to launch it via Docker Compose.
 
-1. Install Docker and Docker Compose (Mac can install both [here](https://docs.docker.com/docker-for-mac/install/).
+1. Install Docker and Docker Compose (Mac users can install both [here](https://docs.docker.com/docker-for-mac/install/)).
 2. Create an [env.sh](examples/TEMPLATE_env.sh) file in the root directory:
 
   ```bash
@@ -33,13 +32,13 @@ The quickest way to get Listo running locally is to launch it via Docker Compose
 4. [OPTIONAL] Once you have Listo running locally you can now customise the checklists and questions for your own requirements [here](data/).
 
 
-## Development
+## Setting up Listo for Development
 
-Running Listo without Docker Compose.
+If you want to modify or debug Listo's code, it's often easier without using Docker or Docker Compose. 
 
 ### Requirements
 
-Listo requires [Yarn](https://yarnpkg.com/) and [Docker](https://www.docker.com/) (for the local Dynamo db).
+Listo requires [Yarn](https://yarnpkg.com/) and [Docker](https://www.docker.com/) (only for the local Dynamo db).
 
 > Note you will still need to have the `env.sh` configured as per [Getting Listo Running Locally](#getting-listo-running-locally).
 
@@ -76,6 +75,18 @@ $ make serve
 
   [http://localhost:3000/](http://localhost:3000/)
 
+
+## Deploying Listo into Production
+
+Deploying Listo for production use requires an AWS account with access to a DynamoDB Table. However, we plan to support other DB's in the future to remove the AWS requirement.
+
+We have a separate build repo internally that picks up this repo and deploys Listo internally with a separate set of custom questions and checklists. We add authentication (using an internal service) and use AWS Secret's Manager for storing credentials). An example of our build process can be found [here](examples/deploy).
+
+## References
+
++ Sample questions and checklists can be found in the [data directory](data/).
++ Listo was influenced by [goSDL](https://github.com/slackhq/goSDL).
++ 
 
 ## License
 

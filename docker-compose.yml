@@ -17,6 +17,7 @@ services:
       - TRELLO_BOARD_LINK
       - SLACK_CHANNEL_LINK
       - SLACK_TARGET_CHANNEL
+      - SLACK_WEB_HOOK
     volumes:
         - ./data:/etc/listo/data:ro
     ports:
