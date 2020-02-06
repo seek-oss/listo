@@ -1,0 +1,332 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Stack for deploying listo into AWS Fargate
+Parameters:
+  ImageUrl:
+    Description: URL for the listo docker image
+    Type: String
+
+  VpcId:
+    Description: VPC to deploy in
+    Type: AWS::EC2::VPC::Id
+
+  PublicSubnetIds:
+    Description: Subnets exposed to the internet, used for the load balancer
+    Type: List<AWS::EC2::Subnet::Id>
+
+  PrivateSubnetIds:
+    Description: Private subnets
+    Type: List<AWS::EC2::Subnet::Id>
+
+  ServiceName:
+    Type: String
+    Default: listo
+
+  TrelloTeam:
+    Type: String
+
+  CertificateArn:
+    Description: ACM certificate for the load balancer
+    Type: String
+
+  OidcAuthorizationEndpoint:
+    Description: Authorization endpoint of the IdP
+    Type: String
+
+  OidcClientId:
+    Description: The OAuth 2.0 client identifier
+    Type: String
+
+  OidcClientSecret:
+    Description: The OAuth 2.0 client secret
+    Type: String
+    NoEcho: true
+
+  OidcIssuer:
+    Description: The OIDC issuer identifier of the IdP. This must be a full URL, including the HTTPS protocol, the domain, and the path.
+    Type: String
+
+  OidcTokenEndpoint:
+    Description: The token endpoint of the IdP. This must be a full URL, including the HTTPS protocol, the domain, and the path.
+    Type: String
+
+  OidcUserInfoEndpoint:
+    Description: The user info endpoint of the IdP. This must be a full URL, including the HTTPS protocol, the domain, and the path.
+    Type: String
+
+  AlbHostedZoneId:
+    Description: The Route53 zone ID for creating a DNS record to the ALB
+    Type: String
+
+  AlbDnsName:
+    Description: The DNS name to assign the load balancer, e.g. listo.example.com
+    Type: String
+Resources:
+  AlbSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: listo-alb-security-group
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: '0.0.0.0/0'
+
+  Alb:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      SecurityGroups:
+        - !Ref AlbSecurityGroup
+      Subnets: !Ref PublicSubnetIds
+      LoadBalancerAttributes:
+       - Key: idle_timeout.timeout_seconds
+         Value: 60
+       - Key: deletion_protection.enabled
+         Value: true
+
+  HttpsListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref CertificateArn
+      DefaultActions:
+        # enforce authentication on all requests
+        - Type: authenticate-oidc
+          AuthenticateOidcConfig:
+            AuthorizationEndpoint: !Ref OidcAuthorizationEndpoint
+            ClientId: !Ref OidcClientId
+            ClientSecret: !Ref OidcClientSecret
+            Issuer: !Ref OidcIssuer
+            TokenEndpoint: !Ref OidcTokenEndpoint
+            UserInfoEndpoint: !Ref OidcUserInfoEndpoint
+          Order: 1
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+          Order: 2
+      LoadBalancerArn: !Ref Alb
+      Port: 443
+      Protocol: HTTPS
+
+  HttpRedirectListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: redirect
+          RedirectConfig:
+            Host: '#{host}'
+            Path: '/#{path}'
+            Port: 443
+            Protocol: 'HTTPS'
+            Query: '#{query}'
+            StatusCode: HTTP_301
+      LoadBalancerArn: !Ref Alb
+      Port: 80
+      Protocol: HTTP
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: '/health'
+      HealthCheckTimeoutSeconds: 5
+      UnhealthyThresholdCount: 2
+      HealthyThresholdCount: 2
+      Port: 8080
+      Protocol: HTTP
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 60
+      TargetType: ip
+      VpcId: !Ref VpcId
+
+  AlbDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref AlbHostedZoneId
+      Name: !Ref AlbDnsName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt Alb.DNSName
+        HostedZoneId: !GetAtt Alb.CanonicalHostedZoneID
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: listo
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !Ref ExecutionRole
+      TaskRoleArn: !Ref TaskRole
+      ContainerDefinitions:
+        - Name: !Ref ServiceName
+          Image: !Ref ImageUrl
+          PortMappings:
+            - ContainerPort: 8000
+          Environment:
+            - Name: WEBHOOK_SECRET_ID
+              Value: !Ref SlackWebHookSecret
+            - Name: TRELLO_SCRET_ID
+              Value: !Ref TrelloCredentialsSecret
+            - Name: DYNAMODB_TABLE
+              Value: !Ref BoardsTable
+            - Name: TRELLO_TEAM
+              Value: !Ref TrelloTeam
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref LogGroup
+              awslogs-stream-prefix: ecs
+
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    DeletionPolicy: Retain
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Path: '/'
+      Policies:
+        - PolicyName: read-s3
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource:
+                  - !Ref TrelloCredentialsSecret
+                  - !Ref SlackWebHookSecret
+              - Effect: Allow
+                Action:
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource: !GetAtt BoardsTable.Arn
+
+  AutoScalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole
+
+  ContainerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub '${ServiceName}-sg'
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          SourceSecurityGroupId: !Ref AlbSecurityGroup
+
+  ListoService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      TaskDefinition: !Ref TaskDefinition
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 100
+        MaximumPercent: 200
+      DesiredCount: 2
+      HealthCheckGracePeriodSeconds: 30
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          Subnets: !Ref PrivateSubnetIds
+          SecurityGroups:
+            - !Ref ContainerSecurityGroup
+      LoadBalancers:
+        - ContainerName: !Ref ServiceName
+          ContainerPort: 8000
+          TargetGroupArn: !Ref TargetGroup
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /listo
+      RetentionInDays: 14
+
+  AutoScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MinCapacity: 1
+      MaxCapacity: 5
+      ResourceId: !Sub 'service/${Cluster}/${ListoService.Name}'
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+      RoleARN: !GetAtt AutoScalingRole.Arn
+
+  AutoScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub '${ServiceName}-asp'
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref AutoScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+        ScaleInCooldown: 10
+        ScaleOutCooldown: 10
+        TargetValue: 75
+
+  BoardsTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      TableName: listo-boards
+
+  TrelloCredentialsSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: listo/trello-credentials
+      Description: Trello API credentials for Listo
+
+  SlackWebHookSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: listo/slack-web-hook
+      Description: Slack webhook for Listo
