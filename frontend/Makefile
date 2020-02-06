@@ -1,5 +1,5 @@
 install:
-	(cd ../ && yarn install)
+	yarn install
 
 prettier:
 	yarn run format
