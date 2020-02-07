@@ -3,6 +3,8 @@
 
 Use questionnaires and checklists to make it easy to do the right thing, regarding the software you build.
 
+[![Gitter](https://badges.gitter.im/listo-chat/community.svg)](https://gitter.im/listo-chat/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ## About
 
 Checklists are at the heart of Listo, empowering engineering teams to perform a web-based self-assessment, which results in a Trello board containing the essential security, reliability and architecture requirements from our RFCs, tailored to a project's objectives. 
