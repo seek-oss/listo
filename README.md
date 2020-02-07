@@ -5,6 +5,8 @@ Use questionnaires and checklists to make it easy to do the right thing, regardi
 
 ## About
 
+[![Join the chat at https://gitter.im/listo-chat/community](https://badges.gitter.im/listo-chat/community.svg)](https://gitter.im/listo-chat/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Checklists are at the heart of Listo, empowering engineering teams to perform a web-based self-assessment, which results in a Trello board containing the essential security, reliability and architecture requirements from our RFCs, tailored to a project's objectives. 
 
 A more detailed blog post can be found [on SEEK's Tech Blog](https://medium.com/seek-blog/listo-failing-safely-with-checklists-and-rfc-s-d14b6fa34b2f).
