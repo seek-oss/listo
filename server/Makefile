@@ -2,7 +2,7 @@ export CREATE_DYNAMO_TABLES=true
 export DYNAMO_DB_ENDPOINT=http://localhost:9000
 
 install:
-	(cd ../ && yarn install)
+	yarn install
 
 prettier:
 	yarn run format
@@ -37,4 +37,4 @@ get_project:
 slack_message:
 	yarn run test -- -s
 
-.PHONY: deploy serve prettier test install
+.PHONY: deploy serve install prettier test

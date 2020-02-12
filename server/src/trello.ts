@@ -80,9 +80,13 @@ export async function createBoard(name: string): Promise<any> {
     ['name', name],
     ['defaultLists', 'false'],
     ['defaultLabels', 'false'],
-    ['idOrganization', TRELLO_TEAM], // The Listo Trello team
-    ['prefs_permissionLevel', 'enterprise'], // All users within the Trello org have read access to all boards.
   ]);
+
+  if (TRELLO_TEAM) {
+    params.set('idOrganization', TRELLO_TEAM); // The Listo Trello team
+    params.set('prefs_permissionLevel', 'enterprise'); // All users within the Trello org have read access to all boards.
+  }
+
   const url = await buildURL('boards', params);
   const options = {
     method: 'POST',
