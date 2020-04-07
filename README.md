@@ -3,7 +3,6 @@
 
 Use questionnaires and checklists to make it easy to do the right thing, regarding the software you build.
 
-[![Gitter](https://badges.gitter.im/listo-chat/community.svg)](https://gitter.im/listo-chat/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## About
 
