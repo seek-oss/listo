@@ -71,11 +71,6 @@ export interface CheckList {
   tools?: string[];
 }
 
-interface Criteria {
-  criteriaType: string;
-  modules?: string[];
-}
-
 interface ProjectTypes {
   name: string;
   modules?: string[];
@@ -102,4 +97,17 @@ export interface DirectoryData {
     projectTypes: ProjectTypes[];
     tooling: Tools;
   };
+}
+
+export enum DatabaseType {
+  Dynamo,
+  Disk,
+}
+
+export interface Database {
+  type: DatabaseType;
+  createTable: () => Promise<void>;
+  storeProject: (projectInfo: Result) => Promise<string>;
+  updateProject: (projectId: string, boardLink: string) => Promise<string>;
+  getProject: (projectId: string) => Promise<string>;
 }

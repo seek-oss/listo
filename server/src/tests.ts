@@ -98,29 +98,6 @@ const TEST_DATA = {
       }
       process.exit(exitCode);
     }
-
-    if (program.listBoards) {
-      const url = 'http://localhost:8000/listBoards';
-
-      const options = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      };
-
-      const board = await (await fetch(url, options)).json();
-
-      let exitCode = 0;
-      if (board.status === 200) {
-        console.log(`List of current boards: ${board.boards}`);
-      } else {
-        console.error(`Unable to list boards.`);
-        exitCode = 1;
-      }
-      process.exit(exitCode);
-    }
   } catch (err) {
     console.error(err);
   }
