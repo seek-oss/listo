@@ -1,6 +1,11 @@
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid';
-import { Result, DatabaseType, Database } from '../../frontend/src/types';
+import {
+  Result,
+  DatabaseType,
+  Database,
+  DatabaseModel,
+} from '../../frontend/src/types';
 import { dynamoConfigOptions, tableName } from './config';
 
 export class Dynamo implements Database {
@@ -11,7 +16,7 @@ export class Dynamo implements Database {
     this.dynamoDb = new AWS.DynamoDB.DocumentClient(dynamoConfigOptions);
   }
 
-  public async createTable() {
+  public async init() {
     if (process.env.CREATE_DYNAMO_TABLES) {
       const params = {
         TableName: tableName,
@@ -40,14 +45,18 @@ export class Dynamo implements Database {
     try {
       const timestamp = new Date().getTime();
       const projectId = uuid.v4();
+
+      const dbObject: DatabaseModel = {
+        id: projectId,
+        metaData: projectInfo,
+        boardLink: null,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      };
+
       const params = {
         TableName: tableName,
-        Item: {
-          id: projectId,
-          metaData: projectInfo,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        },
+        Item: dbObject,
       };
 
       await this.dynamoDb.put(params).promise();
@@ -90,7 +99,7 @@ export class Dynamo implements Database {
     }
   }
 
-  public async getProject(projectId: string): Promise<string> {
+  public async getProject(projectId: string): Promise<DatabaseModel> {
     try {
       const params = {
         TableName: tableName,
@@ -100,11 +109,14 @@ export class Dynamo implements Database {
       };
 
       const data = await this.dynamoDb.get(params).promise();
+
       if (!Object.keys(data).length) {
         throw 'Project not found';
       }
 
-      return JSON.stringify(data, null, 2);
+      const dbObject = <DatabaseModel>data.Item;
+
+      return dbObject;
     } catch (err) {
       console.log(
         `Unable to get ${projectId} from ${tableName} Dynamo table`,

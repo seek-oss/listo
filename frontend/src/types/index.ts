@@ -106,8 +106,16 @@ export enum DatabaseType {
 
 export interface Database {
   type: DatabaseType;
-  createTable: () => Promise<void>;
+  init: () => Promise<void>;
   storeProject: (projectInfo: Result) => Promise<string>;
   updateProject: (projectId: string, boardLink: string) => Promise<string>;
-  getProject: (projectId: string) => Promise<string>;
+  getProject: (projectId: string) => Promise<DatabaseModel>;
+}
+
+export interface DatabaseModel {
+  id: string;
+  metaData: Result;
+  boardLink: string;
+  createdAt: number;
+  updatedAt: number;
 }

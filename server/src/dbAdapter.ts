@@ -18,8 +18,8 @@ export class DatabaseAdapter implements Database {
     }
   }
 
-  public async createTable() {
-    await this.db.createTable();
+  public async init() {
+    await this.db.init();
   }
 
   public async storeProject(projectInfo: Result) {

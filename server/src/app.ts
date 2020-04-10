@@ -14,8 +14,8 @@ const SCHEMA_PATH = process.env.SCHEMA_PATH || '../frontend/data-schema.json';
       console.log('Unable to read listo data');
       process.exit(1);
     }
-    const db = new DatabaseAdapter(DatabaseType.Dynamo);
-    db.createTable(); // creates the table only for local dev
+    const db = new DatabaseAdapter(DatabaseType.Disk);
+    await db.init();
     const server = await appFactory(db, listoData);
     server.listen(PORT);
     console.log(`listening on http://localhost:${PORT}`);
