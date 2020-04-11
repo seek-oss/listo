@@ -1,85 +1,72 @@
 import { promises as fs } from 'fs';
-import {
-  Result,
-  Database,
-  DatabaseType,
-  DatabaseModel,
-} from '../../frontend/src/types';
+import { writeFileSync } from 'fs';
 import * as uuid from 'uuid';
+import { Repository } from './types';
+import { diskPath } from './config';
+import { DatabaseModel } from '../../frontend/src/types';
 
-export class Disk implements Database {
-  public type = DatabaseType.Disk;
+export class Disk implements Repository {
   db: Map<string, DatabaseModel>;
-  path = './db.json';
 
-  async saveDB() {
+  saveDB() {
     const serialiseDB = JSON.stringify(Array.from(this.db.entries()));
-    await fs.writeFile(this.path, serialiseDB);
+    writeFileSync(diskPath, serialiseDB);
   }
 
   async fetchDB() {
-    try {
-      const file = await fs.readFile(this.path, 'utf-8');
-      this.db = new Map(JSON.parse(file));
-    } catch (err) {
-      throw `Could not open the file ${this.path} with error: ${err}`;
-    }
+    const file = await fs.readFile(diskPath, 'utf-8');
+    this.db = new Map(JSON.parse(file));
   }
 
   public async init() {
     try {
       await this.fetchDB();
+      console.log(
+        `A Disk database was found here: ${diskPath}. Loading it now...`,
+      );
     } catch (err) {
-      // No database found so create a new one
+      console.log(`No Disk database found. Creating one here: ${diskPath}`);
       this.db = new Map();
     }
   }
 
-  public async storeProject(projectInfo: Result): Promise<string> {
-    try {
-      const timestamp = new Date().getTime();
-      const projectId = uuid.v4();
-      const dbObject: DatabaseModel = {
-        id: projectId,
-        metaData: projectInfo,
-        boardLink: '',
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      };
+  public async create(project: DatabaseModel): Promise<string> {
+    const timestamp = new Date().getTime();
+    const projectId = uuid.v4();
 
-      this.db.set(projectId, dbObject);
-      await this.saveDB();
+    project.id = projectId;
+    project.boardLink = '';
+    project.createdAt = timestamp;
+    project.updatedAt = timestamp;
 
-      return projectId;
-    } catch (err) {
-      console.error(`Can't store project: ${err}`);
-      throw `Can't store project: ${err}`;
-    }
+    this.db.set(projectId, project);
+    this.saveDB();
+
+    return projectId;
   }
 
-  public async updateProject(
-    projectId: string,
-    boardLink: string,
-  ): Promise<string> {
-    if (this.db.has(projectId)) {
-      const project = this.db.get(projectId);
-      project.boardLink = boardLink;
-      project.updatedAt = new Date().getTime();
+  public async update(projectId: string, boardLink: string): Promise<string> {
+    const project = this.db.get(projectId);
 
-      this.db.set(projectId, project);
-      await this.saveDB();
-
-      return projectId;
-    } else {
+    if (!project) {
       throw `Can't find project with id: ${projectId}`;
     }
+    project.boardLink = boardLink;
+    project.updatedAt = new Date().getTime();
+
+    this.db.set(projectId, project);
+    this.saveDB();
+
+    return projectId;
   }
 
-  public async getProject(projectId: string): Promise<DatabaseModel> {
-    if (this.db.has(projectId)) {
-      return this.db.get(projectId);
-    } else {
+  public async find(projectId: string): Promise<DatabaseModel> {
+    const project = this.db.get(projectId);
+
+    if (!project) {
       throw `Can't find project with id: ${projectId}`;
     }
+
+    return project;
   }
 }

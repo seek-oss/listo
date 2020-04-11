@@ -13,7 +13,7 @@ import {
   PickedCategories,
   ProjectMetaResponses,
   Meta,
-  DatabaseModel,
+  DatabaseModel
 } from './types/index';
 
 interface ProjectProps extends RouteComponentProps {
@@ -61,8 +61,8 @@ export const Project = (props: ProjectProps) => {
         const projectResult: Result = project.metaData;
         prepareProjectData(
           projectResult,
-          project.boardLink,
-          project.createdAt.toString(),
+          project.boardLink || "",
+          project.createdAt ? project.createdAt.toString() : "",
         );
       } catch (err) {
         setErrorState(true);

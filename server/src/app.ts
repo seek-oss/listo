@@ -1,9 +1,10 @@
 import appFactory from './appFactory';
-import { DatabaseAdapter } from './dbAdapter';
 import { combineData } from './data';
-import { DatabaseType } from '../../frontend/src/types';
+import { Disk } from './diskdb';
+import { Dynamo } from './dynamodb';
+import { port } from './config';
+import { Repository } from './types';
 
-const PORT = process.env.LISTO_SERVER_PORT || 8000;
 const DATA_DIR = process.env.DATA_DIR || '../data';
 const SCHEMA_PATH = process.env.SCHEMA_PATH || '../frontend/data-schema.json';
 
@@ -14,11 +15,19 @@ const SCHEMA_PATH = process.env.SCHEMA_PATH || '../frontend/data-schema.json';
       console.log('Unable to read listo data');
       process.exit(1);
     }
-    const db = new DatabaseAdapter(DatabaseType.Disk);
+
+    // Disk is the default database
+    let db: Repository = new Disk();
+
+    if (process.env.LISTO_DATABASE === 'Dynamo') {
+      db = new Dynamo();
+    }
+
     await db.init();
+
     const server = await appFactory(db, listoData);
-    server.listen(PORT);
-    console.log(`listening on http://localhost:${PORT}`);
+    server.listen(port);
+    console.log(`listening on http://localhost:${port}`);
   } catch (err) {
     console.error('Error starting program', err);
   }

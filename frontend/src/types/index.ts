@@ -99,23 +99,10 @@ export interface DirectoryData {
   };
 }
 
-export enum DatabaseType {
-  Dynamo,
-  Disk,
-}
-
-export interface Database {
-  type: DatabaseType;
-  init: () => Promise<void>;
-  storeProject: (projectInfo: Result) => Promise<string>;
-  updateProject: (projectId: string, boardLink: string) => Promise<string>;
-  getProject: (projectId: string) => Promise<DatabaseModel>;
-}
-
 export interface DatabaseModel {
-  id: string;
+  id?: string;
   metaData: Result;
-  boardLink: string;
-  createdAt: number;
-  updatedAt: number;
+  boardLink?: string;
+  createdAt?: number;
+  updatedAt?: number;
 }

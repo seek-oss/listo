@@ -1,11 +1,15 @@
 import * as express from 'express';
 import * as trello from './trello';
 import * as slack from './slack';
-const path = require('path');
-import { DatabaseAdapter } from './dbAdapter';
-
 import * as cors from 'cors';
-import { DirectoryData, Result, Meta } from '../../frontend/src/types';
+import {
+  DirectoryData,
+  Result,
+  Meta,
+  DatabaseModel,
+} from '../../frontend/src/types';
+import { Repository } from './types';
+const path = require('path');
 
 const {
   FRONTEND_ASSETS_PATH,
@@ -22,7 +26,7 @@ function buildProjectURL(
   return `${scheme}://${host}/project/${projectId}`;
 }
 
-async function appFactory(db: DatabaseAdapter, listoData: DirectoryData) {
+async function appFactory(db: Repository, listoData: DirectoryData) {
   const app = express();
   app.use(express.json());
   app.use(cors());
@@ -61,7 +65,8 @@ async function appFactory(db: DatabaseAdapter, listoData: DirectoryData) {
     let projectId = null;
 
     try {
-      projectId = await db.storeProject(inputData);
+      const project: DatabaseModel = { metaData: inputData };
+      projectId = await db.create(project);
     } catch (err) {
       console.log(`Failed to store project ${projectId}.`, err);
     }
@@ -93,7 +98,7 @@ async function appFactory(db: DatabaseAdapter, listoData: DirectoryData) {
     }
 
     try {
-      await db.updateProject(projectId, board.shortUrl);
+      await db.update(projectId, board.shortUrl);
     } catch (err) {
       console.log(
         `Failed to update project (${projectId}) with board url ${board.shortUrl}...`,
@@ -134,7 +139,7 @@ async function appFactory(db: DatabaseAdapter, listoData: DirectoryData) {
 
   apiRouter.get('/project/:id', async (req, res) => {
     try {
-      const project = await db.getProject(req.params.id);
+      const project = await db.find(req.params.id);
       res.json({ project: JSON.stringify(project, null, 2), status: 200 });
     } catch (err) {
       console.error(`Failed to find project with ${req.params.id}`, err);

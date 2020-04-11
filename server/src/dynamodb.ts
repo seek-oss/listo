@@ -1,19 +1,14 @@
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid';
-import {
-  Result,
-  DatabaseType,
-  Database,
-  DatabaseModel,
-} from '../../frontend/src/types';
 import { dynamoConfigOptions, tableName } from './config';
+import { Repository } from './types';
+import { DatabaseModel } from '../../frontend/src/types';
 
-export class Dynamo implements Database {
-  public type = DatabaseType.Dynamo;
-  dynamoDb: AWS.DynamoDB.DocumentClient;
+export class Dynamo implements Repository {
+  db: AWS.DynamoDB.DocumentClient;
 
   constructor() {
-    this.dynamoDb = new AWS.DynamoDB.DocumentClient(dynamoConfigOptions);
+    this.db = new AWS.DynamoDB.DocumentClient(dynamoConfigOptions);
   }
 
   public async init() {
@@ -30,7 +25,7 @@ export class Dynamo implements Database {
 
       try {
         const dynamoClient = new AWS.DynamoDB(dynamoConfigOptions);
-        console.log('dynamo config: ', dynamoConfigOptions);
+        console.debug('dynamo config: ', dynamoConfigOptions);
         await dynamoClient.createTable(params).promise();
         const data = await dynamoClient.listTables().promise();
         console.log('Created table.', JSON.stringify(data, null, 2));
@@ -41,41 +36,25 @@ export class Dynamo implements Database {
     }
   }
 
-  public async storeProject(projectInfo: Result): Promise<string> {
-    try {
-      const timestamp = new Date().getTime();
-      const projectId = uuid.v4();
+  public async create(project: DatabaseModel): Promise<string> {
+    const timestamp = new Date().getTime();
+    const projectId = uuid.v4();
 
-      const dbObject: DatabaseModel = {
-        id: projectId,
-        metaData: projectInfo,
-        boardLink: null,
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      };
+    project.id = projectId;
+    project.boardLink = null;
+    project.createdAt = timestamp;
+    project.updatedAt = timestamp;
 
-      const params = {
-        TableName: tableName,
-        Item: dbObject,
-      };
+    const params = {
+      TableName: tableName,
+      Item: project,
+    };
 
-      await this.dynamoDb.put(params).promise();
-
-      return projectId;
-    } catch (err) {
-      console.log(
-        `Unable to put project into DynamoDB`,
-        JSON.stringify(projectInfo),
-        err,
-      );
-      throw err;
-    }
+    await this.db.put(params).promise();
+    return projectId;
   }
 
-  public async updateProject(
-    projectId: string,
-    boardLink: string,
-  ): Promise<string> {
+  public async update(projectId: string, boardLink: string): Promise<string> {
     const params = {
       TableName: tableName,
       Key: {
@@ -89,40 +68,27 @@ export class Dynamo implements Database {
       ReturnValues: 'UPDATED_NEW',
     };
 
-    try {
-      const resp = await this.dynamoDb.update(params).promise();
-      console.log('Successfully updated item', JSON.stringify(resp));
-      return projectId;
-    } catch (err) {
-      console.log(`Unable to update listoProject with id ${projectId}`, err);
-      throw err;
-    }
+    const resp = await this.db.update(params).promise();
+    console.log('Successfully updated item', JSON.stringify(resp));
+    return projectId;
   }
 
-  public async getProject(projectId: string): Promise<DatabaseModel> {
-    try {
-      const params = {
-        TableName: tableName,
-        Key: {
-          id: projectId,
-        },
-      };
+  public async find(projectId: string): Promise<DatabaseModel> {
+    const params = {
+      TableName: tableName,
+      Key: {
+        id: projectId,
+      },
+    };
 
-      const data = await this.dynamoDb.get(params).promise();
+    const data = await this.db.get(params).promise();
 
-      if (!Object.keys(data).length) {
-        throw 'Project not found';
-      }
-
-      const dbObject = <DatabaseModel>data.Item;
-
-      return dbObject;
-    } catch (err) {
-      console.log(
-        `Unable to get ${projectId} from ${tableName} Dynamo table`,
-        err,
-      );
-      throw err;
+    if (!Object.keys(data).length) {
+      throw 'Project not found';
     }
+
+    const dbObject = <DatabaseModel>data.Item;
+
+    return dbObject;
   }
 }
