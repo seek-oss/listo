@@ -23,16 +23,11 @@ export class Dynamo implements Repository {
         },
       };
 
-      try {
-        const dynamoClient = new AWS.DynamoDB(dynamoConfigOptions);
-        console.debug('dynamo config: ', dynamoConfigOptions);
-        await dynamoClient.createTable(params).promise();
-        const data = await dynamoClient.listTables().promise();
-        console.log('Created table.', JSON.stringify(data, null, 2));
-      } catch (err) {
-        if (err.message != 'Cannot create preexisting table')
-          console.log(`Unable to create table:`, err.message);
-      }
+      const dynamoClient = new AWS.DynamoDB(dynamoConfigOptions);
+      console.debug('dynamo config: ', dynamoConfigOptions);
+      await dynamoClient.createTable(params).promise();
+      const data = await dynamoClient.listTables().promise();
+      console.log('Created table.', JSON.stringify(data, null, 2));
     }
   }
 
@@ -73,7 +68,7 @@ export class Dynamo implements Repository {
     return projectId;
   }
 
-  public async find(projectId: string): Promise<DatabaseModel> {
+  public async get(projectId: string): Promise<DatabaseModel> {
     const params = {
       TableName: tableName,
       Key: {
@@ -88,7 +83,5 @@ export class Dynamo implements Repository {
     }
 
     return <DatabaseModel>data.Item;
-
-    return dbObject;
   }
 }

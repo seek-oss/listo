@@ -9,37 +9,29 @@ export class Disk implements Repository {
   db: Map<string, DatabaseModel>;
 
   async saveDB() {
-    try {
-      const options = { stale: 5000, retries: 2 };
-      const release = await lockfile.lock(diskPath, options);
-      const serialiseDB = JSON.stringify(Array.from(this.db.entries()));
-      await fs.writeFile(diskPath, serialiseDB);
-      await release();
-    } catch (err) {
-      console.log(err);
-    }
+    const options = { stale: 5000, retries: 2 };
+    const release = await lockfile.lock(diskPath, options);
+    const serialiseDB = JSON.stringify(Array.from(this.db.entries()));
+    await fs.writeFile(diskPath, serialiseDB);
+    await release();
   }
 
-  async fetchDB(): Promise<boolean> {
-    try {
-      const file = await fs.readFile(diskPath, 'utf-8');
-      this.db = new Map(JSON.parse(file));
-      return true;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
+  async fetchDB() {
+    const file = await fs.readFile(diskPath, 'utf-8');
+    this.db = new Map(JSON.parse(file));
   }
 
   public async init() {
-    if (await this.fetchDB()) {
+    try {
+      await this.fetchDB();
       console.log(
         `A Disk database was found here: ${diskPath}. Loading it now...`,
       );
-    } else {
+    } catch (err) {
       this.db = new Map();
-      await fs.writeFile(diskPath, '');
+      console.debug(`${err}`);
       console.log(`No Disk database found. Creating one here: ${diskPath}`);
+      await fs.writeFile(diskPath, '');
     }
   }
 
@@ -73,7 +65,7 @@ export class Disk implements Repository {
     return projectId;
   }
 
-  public async find(projectId: string): Promise<DatabaseModel> {
+  public async get(projectId: string): Promise<DatabaseModel> {
     const project = this.db.get(projectId);
 
     if (!project) {
