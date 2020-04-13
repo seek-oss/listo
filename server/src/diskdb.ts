@@ -1,32 +1,45 @@
 import { promises as fs } from 'fs';
-import { writeFileSync } from 'fs';
 import * as uuid from 'uuid';
 import { Repository } from './types';
 import { diskPath } from './config';
 import { DatabaseModel } from '../../frontend/src/types';
+import * as lockfile from 'proper-lockfile';
 
 export class Disk implements Repository {
   db: Map<string, DatabaseModel>;
 
-  saveDB() {
-    const serialiseDB = JSON.stringify(Array.from(this.db.entries()));
-    writeFileSync(diskPath, serialiseDB);
+  async saveDB() {
+    try {
+      const options = { stale: 5000, retries: 2 };
+      const release = await lockfile.lock(diskPath, options);
+      const serialiseDB = JSON.stringify(Array.from(this.db.entries()));
+      await fs.writeFile(diskPath, serialiseDB);
+      await release();
+    } catch (err) {
+      console.log(err);
+    }
   }
 
-  async fetchDB() {
-    const file = await fs.readFile(diskPath, 'utf-8');
-    this.db = new Map(JSON.parse(file));
+  async fetchDB(): Promise<boolean> {
+    try {
+      const file = await fs.readFile(diskPath, 'utf-8');
+      this.db = new Map(JSON.parse(file));
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   }
 
   public async init() {
-    try {
-      await this.fetchDB();
+    if (await this.fetchDB()) {
       console.log(
         `A Disk database was found here: ${diskPath}. Loading it now...`,
       );
-    } catch (err) {
-      console.log(`No Disk database found. Creating one here: ${diskPath}`);
+    } else {
       this.db = new Map();
+      await fs.writeFile(diskPath, '');
+      console.log(`No Disk database found. Creating one here: ${diskPath}`);
     }
   }
 
@@ -40,7 +53,7 @@ export class Disk implements Repository {
     project.updatedAt = timestamp;
 
     this.db.set(projectId, project);
-    this.saveDB();
+    await this.saveDB();
 
     return projectId;
   }
@@ -55,7 +68,7 @@ export class Disk implements Repository {
     project.updatedAt = new Date().getTime();
 
     this.db.set(projectId, project);
-    this.saveDB();
+    await this.saveDB();
 
     return projectId;
   }
