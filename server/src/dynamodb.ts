@@ -83,11 +83,11 @@ export class Dynamo implements Repository {
 
     const data = await this.db.get(params).promise();
 
-    if (!Object.keys(data).length) {
+    if (!data.Item) {
       throw 'Project not found';
     }
 
-    const dbObject = <DatabaseModel>data.Item;
+    return <DatabaseModel>data.Item;
 
     return dbObject;
   }

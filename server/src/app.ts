@@ -17,7 +17,13 @@ const SCHEMA_PATH = process.env.SCHEMA_PATH || '../frontend/data-schema.json';
     }
 
     // Disk is the default database
-    let db: Repository = new Disk();
+    let db: Repository;
+    
+    if (process.env.LISTO_DATABASE === 'Dynamo') {
+        db = new Dynamo();
+    } else {
+        db = new Disk();
+    }
 
     if (process.env.LISTO_DATABASE === 'Dynamo') {
       db = new Dynamo();
