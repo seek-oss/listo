@@ -1,20 +1,29 @@
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid';
-import { dynamoConfigOptions, tableName } from './config';
 import { Repository } from './types';
 import { DatabaseModel } from '../../frontend/src/types';
+import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
 export class Dynamo implements Repository {
   db: AWS.DynamoDB.DocumentClient;
+  tableName: string;
+  dynamoConfigOptions: ServiceConfigurationOptions;
 
-  constructor() {
-    this.db = new AWS.DynamoDB.DocumentClient(dynamoConfigOptions);
+  constructor(
+    dynamoConfigOptions: ServiceConfigurationOptions,
+    tableName: string,
+  ) {
+    this.dynamoConfigOptions = dynamoConfigOptions;
+    this.dynamoConfigOptions.region =
+      dynamoConfigOptions.region || 'ap-southeast-2';
+    this.tableName = tableName || 'Projects';
+    this.db = new AWS.DynamoDB.DocumentClient(this.dynamoConfigOptions);
   }
 
   public async init() {
     if (process.env.CREATE_DYNAMO_TABLES) {
       const params = {
-        TableName: tableName,
+        TableName: this.tableName,
         KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
         AttributeDefinitions: [{ AttributeName: 'id', AttributeType: 'S' }],
         ProvisionedThroughput: {
@@ -23,8 +32,8 @@ export class Dynamo implements Repository {
         },
       };
 
-      const dynamoClient = new AWS.DynamoDB(dynamoConfigOptions);
-      console.debug('dynamo config: ', dynamoConfigOptions);
+      const dynamoClient = new AWS.DynamoDB(this.dynamoConfigOptions);
+      console.debug('dynamo config: ', this.dynamoConfigOptions);
       await dynamoClient.createTable(params).promise();
       const data = await dynamoClient.listTables().promise();
       console.log('Created table.', JSON.stringify(data, null, 2));
@@ -32,16 +41,16 @@ export class Dynamo implements Repository {
   }
 
   public async create(project: DatabaseModel): Promise<string> {
-    const timestamp = new Date().getTime();
+    const date = new Date().toString();
     const projectId = uuid.v4();
 
     project.id = projectId;
     project.boardLink = null;
-    project.createdAt = timestamp;
-    project.updatedAt = timestamp;
+    project.createdAt = date;
+    project.updatedAt = date;
 
     const params = {
-      TableName: tableName,
+      TableName: this.tableName,
       Item: project,
     };
 
@@ -51,14 +60,14 @@ export class Dynamo implements Repository {
 
   public async update(projectId: string, boardLink: string): Promise<string> {
     const params = {
-      TableName: tableName,
+      TableName: this.tableName,
       Key: {
         id: projectId,
       },
       UpdateExpression: 'set boardLink = :link, updatedAt = :time',
       ExpressionAttributeValues: {
         ':link': boardLink,
-        ':time': new Date().getTime(),
+        ':time': new Date().toString(),
       },
       ReturnValues: 'UPDATED_NEW',
     };
@@ -70,7 +79,7 @@ export class Dynamo implements Repository {
 
   public async get(projectId: string): Promise<DatabaseModel> {
     const params = {
-      TableName: tableName,
+      TableName: this.tableName,
       Key: {
         id: projectId,
       },

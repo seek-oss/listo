@@ -140,7 +140,7 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
   apiRouter.get('/project/:id', async (req, res) => {
     try {
       const project = await db.get(req.params.id);
-      res.json({ project: JSON.stringify(project, null, 2), status: 200 });
+      res.json({ project: project, status: 200 });
     } catch (err) {
       console.error(`Failed to find project with ${req.params.id}`, err);
       res.status(404).send(`Project not found`);

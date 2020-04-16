@@ -57,7 +57,7 @@ export const Project = (props: ProjectProps) => {
 
         if (res.status !== 200) throw new Error('Project not found');
         const data = await res.json();
-        const project: DatabaseModel = JSON.parse(data.project);
+        const project: DatabaseModel = data.project;
         const projectResult: Result = project.metaData;
         prepareProjectData(
           projectResult,

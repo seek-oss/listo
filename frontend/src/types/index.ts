@@ -103,6 +103,6 @@ export interface DatabaseModel {
   id?: string;
   metaData: Result;
   boardLink?: string;
-  createdAt?: number;
-  updatedAt?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
