@@ -42,7 +42,7 @@ export class Disk implements Repository {
   }
 
   public async create(project: DatabaseModel): Promise<string> {
-    const date = new Date().toString();
+    const date = new Date().toISOString();
     const projectId = uuid.v4();
 
     project.id = projectId;
@@ -63,7 +63,7 @@ export class Disk implements Repository {
       throw `Can't find project with id: ${projectId}`;
     }
     project.boardLink = boardLink;
-    project.updatedAt = new Date().toString();
+    project.updatedAt = new Date().toISOString();
 
     this.db.set(projectId, project);
     await this.saveDB();

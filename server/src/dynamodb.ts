@@ -41,7 +41,7 @@ export class Dynamo implements Repository {
   }
 
   public async create(project: DatabaseModel): Promise<string> {
-    const date = new Date().toString();
+    const date = new Date().toISOString();
     const projectId = uuid.v4();
 
     project.id = projectId;
@@ -67,7 +67,7 @@ export class Dynamo implements Repository {
       UpdateExpression: 'set boardLink = :link, updatedAt = :time',
       ExpressionAttributeValues: {
         ':link': boardLink,
-        ':time': new Date().toString(),
+        ':time': new Date().toISOString(),
       },
       ReturnValues: 'UPDATED_NEW',
     };
