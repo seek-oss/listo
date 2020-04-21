@@ -7,7 +7,7 @@ install:
 prettier:
 	yarn run format
 
-serve: prettier install ../frontend/data-schema.json
+serve: install prettier ../frontend/data-schema.json
 	source ../env.sh ; yarn run start
 
 ../frontend/data-schema.json:

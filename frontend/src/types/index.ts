@@ -71,11 +71,6 @@ export interface CheckList {
   tools?: string[];
 }
 
-interface Criteria {
-  criteriaType: string;
-  modules?: string[];
-}
-
 interface ProjectTypes {
   name: string;
   modules?: string[];
@@ -102,4 +97,12 @@ export interface DirectoryData {
     projectTypes: ProjectTypes[];
     tooling: Tools;
   };
+}
+
+export interface DatabaseModel {
+  id?: string;
+  metaData: Result;
+  boardLink?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

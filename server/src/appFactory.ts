@@ -1,12 +1,15 @@
-import * as AWS from 'aws-sdk';
 import * as express from 'express';
 import * as trello from './trello';
 import * as slack from './slack';
-const path = require('path');
-import { storeProject, updateProject, listAllBoards, getProject } from './db';
-
 import * as cors from 'cors';
-import { DirectoryData, Result, Meta } from '../../frontend/src/types';
+import {
+  DirectoryData,
+  Result,
+  Meta,
+  DatabaseModel,
+} from '../../frontend/src/types';
+import { Repository } from './types';
+const path = require('path');
 
 const {
   FRONTEND_ASSETS_PATH,
@@ -23,10 +26,7 @@ function buildProjectURL(
   return `${scheme}://${host}/project/${projectId}`;
 }
 
-async function appFactory(
-  dynamoDb: AWS.DynamoDB.DocumentClient,
-  listoData: DirectoryData,
-) {
+async function appFactory(db: Repository, listoData: DirectoryData) {
   const app = express();
   app.use(express.json());
   app.use(cors());
@@ -65,7 +65,8 @@ async function appFactory(
     let projectId = null;
 
     try {
-      projectId = await storeProject(dynamoDb, inputData);
+      const project: DatabaseModel = { metaData: inputData };
+      projectId = await db.create(project);
     } catch (err) {
       console.log(`Failed to store project ${projectId}.`, err);
     }
@@ -97,7 +98,7 @@ async function appFactory(
     }
 
     try {
-      await updateProject(dynamoDb, projectId, board.shortUrl);
+      await db.update(projectId, board.shortUrl);
     } catch (err) {
       console.log(
         `Failed to update project (${projectId}) with board url ${board.shortUrl}...`,
@@ -138,20 +139,11 @@ async function appFactory(
 
   apiRouter.get('/project/:id', async (req, res) => {
     try {
-      const project = await getProject(dynamoDb, req.params.id);
+      const project = await db.get(req.params.id);
       res.json({ project: project, status: 200 });
     } catch (err) {
       console.error(`Failed to find project with ${req.params.id}`, err);
       res.status(404).send(`Project not found`);
-    }
-  });
-
-  apiRouter.get('/listBoards', async (_req, res) => {
-    try {
-      const boards = await listAllBoards(dynamoDb);
-      res.json({ boards: JSON.stringify(boards), status: 200 });
-    } catch (err) {
-      console.error(' Failed to list all projects', err);
     }
   });
 

@@ -13,6 +13,7 @@ import {
   PickedCategories,
   ProjectMetaResponses,
   Meta,
+  DatabaseModel
 } from './types/index';
 
 interface ProjectProps extends RouteComponentProps {
@@ -56,12 +57,12 @@ export const Project = (props: ProjectProps) => {
 
         if (res.status !== 200) throw new Error('Project not found');
         const data = await res.json();
-        const project = JSON.parse(data.project);
-        const projectResult: Result = project.Item.metaData;
+        const project: DatabaseModel = data.project;
+        const projectResult: Result = project.metaData;
         prepareProjectData(
           projectResult,
-          project.Item.boardLink,
-          project.Item.createdAt,
+          project.boardLink || "",
+          project.createdAt ? project.createdAt.toString() : "",
         );
       } catch (err) {
         setErrorState(true);

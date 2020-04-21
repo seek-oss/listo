@@ -1,4 +1,5 @@
 env.sh
+db.json
 
 # dependencies
 node_modules/
