@@ -9,7 +9,7 @@ export class Disk implements Repository {
   diskPath: string;
 
   constructor(diskPath: string) {
-    this.diskPath = diskPath || './db.json';
+    this.diskPath = diskPath || './db/db.json';
   }
 
   async saveDB() {

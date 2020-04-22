@@ -24,4 +24,12 @@ deploy:
 			'AlbHostedZoneId=<Route53 zone ID for the DNS record>' \
 			'AlbDnsName=<DNS name to assign the load balancer, e.g. listo.example.com>'
 
+deploy_heroku:
+	docker build github.com/seek-oss/listo -t seek/listo:latest
+	docker build --pull=false -t "$(DOCKER_REPO_URL):${BUILD_NUMBER}" .
+	docker push "$(DOCKER_REPO_URL):${BUILD_NUMBER}"
+	heroku container:push --recursive --app [YOUR_APP_NAME]
+	heroku container:release --app [YOUR_APP_NAME] web
+
+
 .PHONY: deploy
