@@ -3,6 +3,7 @@
 
 Use questionnaires and checklists to make it easy to do the right thing, regarding the software you build.
 
+Want to see Listo in action? Checkout the demo here: [https://listo-demo.herokuapp.com/](https://listo-demo.herokuapp.com/)!
 
 ## About
 
