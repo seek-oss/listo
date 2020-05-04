@@ -1,0 +1,39 @@
+name: Build Listo, Push to Dockerhub and Deploy to Heroku
+
+on: 
+  push:
+    branches:
+      - master
+
+env:
+  IMAGE_NAME: listoproject/listo
+  HEROKU_APP_NAME: listo-demo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build image
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME
+    - name: Log into registry
+      run: echo "${{ secrets.DOCKER_API_KEY }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+    - name: Push image
+      run: docker push $IMAGE_NAME:latest 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Login to Heroku Container registry
+      env: 
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:login 
+    - name: Build and push
+      env: 
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:push -a $HEROKU_APP_NAME web --recursive 
+    - name: Release
+      env: 
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:release -a $HEROKU_APP_NAME web
