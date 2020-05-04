@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - v*
 
 env:
   IMAGE_NAME: listoproject/listo
@@ -19,7 +21,20 @@ jobs:
     - name: Log into registry
       run: echo "${{ secrets.DOCKER_API_KEY }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
     - name: Push image
-      run: docker push $IMAGE_NAME:latest 
+      run: | 
+        # Strip git ref prefix from version
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        
+        # Strip "v" prefix from tag name
+        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+        # Use Docker `latest` tag convention
+        [ "$VERSION" == "master" ] && VERSION=latest
+
+        echo VERSION=$VERSION
+
+        docker tag image $IMAGE_NAME:$VERSION  
+        docker push $IMAGE_NAME:$VERSION
   deploy:
     needs: build
     runs-on: ubuntu-latest
