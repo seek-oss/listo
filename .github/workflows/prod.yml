@@ -5,7 +5,7 @@ on:
     branches:
       - master
     tags:
-      - v*
+      - 'v/*'
 
 env:
   IMAGE_NAME: listoproject/listo
@@ -19,19 +19,16 @@ jobs:
     - name: Build image
       run: docker build . --file Dockerfile --tag $IMAGE_NAME
     - name: Log into registry
-      run: echo "${{ secrets.DOCKER_API_KEY }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin <<< "${{ secrets.DOCKER_API_KEY }}"
     - name: Push image
       run: | 
-        # Strip git ref prefix from version
-        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-        
-        # Strip "v" prefix from tag name
-        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-        # Use Docker `latest` tag convention
-        [ "$VERSION" == "master" ] && VERSION=latest
-
-        echo VERSION=$VERSION
+        if [[ "${{ github.ref }}" =~ ^refs/tags/v/(.*) ]] ; then
+          VERSION="${BASH_REMATCH[1]}"
+        elif [[ "${{ github.ref }}" =~ ^refs/heads/master ]] ; then
+          VERSION="latest"
+        else
+          VERSION="unknown"
+        fi
 
         docker tag image $IMAGE_NAME:$VERSION  
         docker push $IMAGE_NAME:$VERSION
