@@ -24,4 +24,10 @@ deploy:
 			'AlbHostedZoneId=<Route53 zone ID for the DNS record>' \
 			'AlbDnsName=<DNS name to assign the load balancer, e.g. listo.example.com>'
 
+deploy_heroku:
+	heroku container:login 
+	heroku container:push --recursive --app [YOUR_APP_NAME] web
+	heroku container:release --app [YOUR_APP_NAME] web
+
+
 .PHONY: deploy

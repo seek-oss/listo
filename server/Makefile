@@ -1,6 +1,3 @@
-export CREATE_DYNAMO_TABLES=true
-export DYNAMO_DB_ENDPOINT=http://localhost:9000
-
 install:
 	yarn install
 

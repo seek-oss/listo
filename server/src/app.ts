@@ -8,7 +8,7 @@ import { region } from './config';
 
 const DATA_DIR = process.env.DATA_DIR || '../data';
 const SCHEMA_PATH = process.env.SCHEMA_PATH || '../frontend/data-schema.json';
-const PORT = process.env.LISTO_SERVER_PORT || 8000;
+const PORT = process.env.PORT || 8000;
 
 (async function() {
   try {
