@@ -30,7 +30,7 @@ jobs:
           VERSION="unknown"
         fi
 
-        docker tag image $IMAGE_NAME:$VERSION  
+        docker tag $IMAGE_NAME $IMAGE_NAME:$VERSION  
         docker push $IMAGE_NAME:$VERSION
   deploy:
     needs: build
