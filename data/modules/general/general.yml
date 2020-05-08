@@ -1,6 +1,6 @@
 category: General
 description: Guidance that all projects need to follow.
-minimumRisk: Low Risk
+minimumRisk: Mandatory
 checkLists:
   Upgradability:
   - question: There is a commitment and plan for upgrading, patching, and ongoing maintenance for this project.
