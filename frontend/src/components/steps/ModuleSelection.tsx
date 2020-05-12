@@ -36,15 +36,19 @@ const ModuleSelection = () => {
                   {getCategoryName(categoryModules)}
                 </Typography>
                 {Object.entries(categoryModules).map(
-                  ([moduleKey, moduleObject]) => (
-                    <Module
-                      key={moduleObject.title}
-                      categoryKey={categoryName}
-                      moduleKey={moduleKey}
-                      moduleObject={moduleObject}
-                      handleSelectModule={handleSelectModule}
-                    />
-                  ),
+                  ([moduleKey, moduleObject]) => {
+                    if(moduleObject.minimumRisk !== 'Mandatory'){ 
+                      return (  <Module
+                        key={moduleObject.title}
+                        categoryKey={categoryName}
+                        moduleKey={moduleKey}
+                        moduleObject={moduleObject}
+                        handleSelectModule={handleSelectModule}
+                      />
+                      )
+                    }
+                    return null;
+                  },
                 )}
               </Paper>
             </Grid>

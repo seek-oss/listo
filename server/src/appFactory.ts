@@ -26,6 +26,27 @@ function buildProjectURL(
   return `${scheme}://${host}/project/${projectId}`;
 }
 
+function addMandatoryModules(
+  inputData: Result,
+  listodata: DirectoryData,
+): Result {
+  const categories = listodata.data.modules;
+  for (let categoryKey of Object.keys(categories)) {
+    const modules = categories[categoryKey];
+    for (let moduleKey of Object.keys(modules)) {
+      const module = modules[moduleKey];
+      if (module.minimumRisk === 'Mandatory') {
+        if (inputData.selectedModulesByCategory[categoryKey]) {
+          inputData.selectedModulesByCategory[categoryKey].push(moduleKey);
+        } else {
+          inputData.selectedModulesByCategory[categoryKey] = [moduleKey];
+        }
+      }
+    }
+  }
+  return inputData;
+}
+
 async function appFactory(db: Repository, listoData: DirectoryData) {
   const app = express();
   app.use(express.json());
@@ -60,7 +81,7 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
   });
 
   apiRouter.post('/createBoard', async (req, res) => {
-    const inputData = req.body as Result;
+    const inputData = addMandatoryModules(req.body as Result, listoData);
     let board = null;
     let projectId = null;
 
