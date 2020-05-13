@@ -3,6 +3,7 @@ import { URL } from 'url';
 import fetch from 'node-fetch';
 import * as AWS from 'aws-sdk';
 import { region } from './config';
+import pLimit from 'p-limit';
 
 const TRELLO_URL = process.env.TRELLO_URL || 'https://api.trello.com/1';
 const TRELLO_SECRET_ID = process.env.TRELLO_SECRET_ID;
@@ -51,6 +52,7 @@ export interface TrelloCard {
 export interface TrelloCheckList {
   name: string;
   items: TrelloCheckListItem[];
+  cardid?: string;
 }
 
 export interface TrelloCheckListItem {
@@ -73,6 +75,14 @@ async function buildURL(
   }
 
   return url.toString();
+}
+
+async function checkStatus(res) {
+  if (res.ok) {
+    return Promise.resolve(res);
+  } else {
+    return Promise.reject(new Error(res.statusText));
+  }
 }
 
 export async function createBoard(name: string): Promise<any> {
@@ -163,10 +173,9 @@ export async function createCards(
 
 export async function createCheckList(
   checklist: TrelloCheckList,
-  cardId: string,
 ): Promise<Promise<any>[]> {
   const params = new Map([
-    ['idCard', cardId],
+    ['idCard', checklist.cardid],
     ['name', checklist.name],
   ]);
   const url = await buildURL('checklists', params);
@@ -175,38 +184,45 @@ export async function createCheckList(
     method: 'POST',
   };
 
-  const res = await (await fetch(url, options)).json();
+  const trelloChecklist = await (await fetch(url, options)).json();
 
-  const responses = await Promise.all(
-    checklist.items.map(async item => {
-      const params = new Map([
-        ['name', item.name],
-        ['checked', `${item.completed}`],
-      ]);
-      const url = await buildURL(`checklists/${res.id}/checkItems`, params);
+  let responses = [];
+  for (let checklistItem of checklist.items) {
+    const params = new Map([
+      ['name', checklistItem.name],
+      ['checked', `${checklistItem.completed}`],
+    ]);
 
-      const options = {
-        method: 'POST',
-      };
+    const url = await buildURL(
+      `checklists/${trelloChecklist.id}/checkItems`,
+      params,
+    );
 
-      return fetch(url, options);
-    }),
-  );
+    const options = {
+      method: 'POST',
+    };
 
-  return Promise.all(responses.map(response => response.json()));
+    const res = await fetch(url, options);
+    checkStatus(res);
+    responses.push(await res.json());
+  }
+  return responses;
 }
 
 export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
-  let responses = [];
+  let checklists = [];
+  const limit = pLimit(10);
 
   for (let card of cards) {
     for (let checklist of card.checklists) {
-      let p = createCheckList(checklist, card.id);
-      responses.push(p);
+      checklist.cardid = card.id;
+      checklists.push(checklist);
     }
   }
 
-  return Promise.all(responses);
+  return Promise.all(
+    checklists.map(checklist => limit(createCheckList, checklist)),
+  );
 }
 
 export async function createFullBoard(
@@ -230,10 +246,19 @@ export async function createFullBoard(
 
       const list = listsData.find(list => list.name === category);
 
+      let desc = [selectedCategory[moduleKey].description];
+      let resources = selectedCategory[moduleKey].resources;
+
+      if (resources) {
+        resources = resources.map(resource => `+ ${resource}`);
+        desc.push('', 'Resources:', '');
+        desc = desc.concat(resources);
+      }
+
       let cardObj: TrelloCard = {
         name: selectedCategory[moduleKey].title,
         category: selectedCategory[moduleKey].category,
-        description: selectedCategory[moduleKey].description,
+        description: desc.join('\n'),
         tags: selectedCategory[moduleKey].tags,
         listId: list.id,
       };
@@ -274,7 +299,7 @@ export async function createFullBoard(
   }
 
   // create the checklists and checklist items within the cards
-  await Promise.all(await createCheckLists(cards));
+  await createCheckLists(cards);
 
   return board;
 }

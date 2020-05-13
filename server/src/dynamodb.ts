@@ -21,7 +21,10 @@ export class Dynamo implements Repository {
   }
 
   public async init() {
-    if (process.env.LISTO_DATABASE === 'Dynamo' && process.env.CREATE_DYNAMO_TABLES) {
+    if (
+      process.env.LISTO_DATABASE === 'Dynamo' &&
+      process.env.CREATE_DYNAMO_TABLES
+    ) {
       const params = {
         TableName: this.tableName,
         KeySchema: [{ AttributeName: 'id', KeyType: 'HASH' }],
