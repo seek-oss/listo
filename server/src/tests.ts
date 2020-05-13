@@ -24,6 +24,28 @@ const TEST_DATA = {
   Trello: 'https://trello.com/b/dsfadsfafsdf',
 };
 
+const TEST_DATA_CREATE = {
+  selectedRisks: [
+    {
+      text:
+        'Do you want supporting teams such as Security and Architecture to reach out throughout the project?',
+      selection: 'Yes',
+    },
+  ],
+  selectedModulesByCategory: {
+    general: ['general', 'abuse', 'threat_modeling'],
+    // test: ['test_long_checklist'],
+  },
+  projectMetaResponses: {
+    boardName: 'Google Doodle',
+    slackTeam: 'awesome',
+    slackUserName: 'julian',
+    trelloEmail: 'asdfd@sdfadf',
+    riskLevel: 'High Risk',
+  },
+  selectedTools: ['Gantry'],
+};
+
 (async function main() {
   try {
     if (program.deleteBoard) {
@@ -43,22 +65,29 @@ const TEST_DATA = {
     }
 
     if (program.createBoard) {
-      const url = 'http://localhost:8000/createboard';
-
+      const url = 'http://localhost:8000/api/createBoard';
+      const data = TEST_DATA_CREATE;
+      const date = new Date(Date.now());
+      data.projectMetaResponses.boardName = `Board_${date
+        .getSeconds()
+        .toString()}_${date.getMilliseconds().toString()}`;
+      const project = JSON.stringify(data);
       const options = {
         method: 'POST',
         headers: {
-          Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(TEST_DATA),
+        body: project,
       };
 
-      const board = await (await fetch(url, options)).json();
+      const res = await fetch(url, options);
+      // console.log(await res.text());
+
+      const board = await res.json();
 
       let exitCode = 0;
       if (board.status === 200) {
-        console.log(`Successfully created board ${board.url}`);
+        console.log(`Successfully created board ${board.id}`);
         console.log(
           `To delete this board type: projectId=${board.id} make delete_board`,
         );
