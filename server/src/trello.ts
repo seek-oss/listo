@@ -77,14 +77,6 @@ async function buildURL(
   return url.toString();
 }
 
-async function checkStatus(res) {
-  if (res.ok) {
-    return Promise.resolve(res);
-  } else {
-    return Promise.reject(new Error(res.statusText));
-  }
-}
-
 export async function createBoard(name: string): Promise<any> {
   const params = new Map([
     ['name', name],
@@ -180,11 +172,14 @@ export async function createCheckList(
   ]);
   const url = await buildURL('checklists', params);
 
+  // console.log(url);
   const options = {
     method: 'POST',
   };
 
-  const trelloChecklist = await (await fetch(url, options)).json();
+  const res = await fetch(url, options);
+  if (!res.ok) throw new Error(res.statusText);
+  const trelloChecklist = await res.json();
 
   let responses = [];
   for (let checklistItem of checklist.items) {
@@ -203,7 +198,7 @@ export async function createCheckList(
     };
 
     const res = await fetch(url, options);
-    checkStatus(res);
+    if (!res.ok) throw new Error(res.statusText);
     responses.push(await res.json());
   }
   return responses;
@@ -211,7 +206,7 @@ export async function createCheckList(
 
 export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
   let checklists = [];
-  const limit = pLimit(10);
+  const limit = pLimit(5);
 
   for (let card of cards) {
     for (let checklist of card.checklists) {
@@ -275,8 +270,8 @@ export async function createFullBoard(
               name: checklist.question,
               completed: checklist.tools
                 ? checklist.tools.some(checklistTool =>
-                    inputData.selectedTools.includes(checklistTool),
-                  )
+                  inputData.selectedTools.includes(checklistTool),
+                )
                 : false,
             }),
           ),

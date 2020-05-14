@@ -33,8 +33,9 @@ const TEST_DATA_CREATE = {
     },
   ],
   selectedModulesByCategory: {
-    general: ['general', 'abuse', 'threat_modeling'],
-    // test: ['test_long_checklist'],
+    general: ['services', 'abuse', 'threat_modeling'],
+    test: ['test_long_checklist'],
+    code: ['authentication'],
   },
   projectMetaResponses: {
     boardName: 'Google Doodle',
