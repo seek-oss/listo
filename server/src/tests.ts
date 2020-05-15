@@ -24,6 +24,41 @@ const TEST_DATA = {
   Trello: 'https://trello.com/b/dsfadsfafsdf',
 };
 
+const TEST_DATA_FULL_BOARD = {
+  selectedRisks: [
+    {
+      text:
+        'Do you want supporting teams such as Security and Architecture to reach out throughout the project?',
+      selection: 'Yes',
+    },
+  ],
+  selectedModulesByCategory: {
+    code: [
+      'authentication',
+      'authorisation',
+      'csrf',
+      'internal_libs',
+      'open_source',
+      'third_party_libs',
+      'urls',
+      'xml',
+      'xss',
+    ],
+    data: ['general', 'nosql', 'object_store', 'rds'],
+    general: ['abuse', 'services', 'telemetry', 'threat_modeling'],
+    service_provider: ['aws', 'datacentre'],
+    software_env: ['containers', 'servers'],
+  },
+  projectMetaResponses: {
+    boardName: 'Google Doodle',
+    slackTeam: 'awesome',
+    slackUserName: 'julian',
+    trelloEmail: 'asdfd@sdfadf',
+    riskLevel: 'High Risk',
+  },
+  selectedTools: ['Gantry'],
+};
+
 const TEST_DATA_CREATE = {
   selectedRisks: [
     {
