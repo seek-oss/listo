@@ -52,7 +52,6 @@ export interface TrelloCard {
 export interface TrelloCheckList {
   name: string;
   items: TrelloCheckListItem[];
-  cardid?: string;
 }
 
 export interface TrelloCheckListItem {
@@ -165,9 +164,10 @@ export async function createCards(cards: TrelloCard[]): Promise<any[]> {
 
 export async function createCheckList(
   checklist: TrelloCheckList,
+  cardId: string
 ): Promise<Promise<any>[]> {
   const params = new Map([
-    ['idCard', checklist.cardid],
+    ['idCard', cardId],
     ['name', checklist.name],
   ]);
   const url = await buildURL('checklists', params);
@@ -208,16 +208,12 @@ export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
 
   for (let card of cards) {
     for (let checklist of card.checklists) {
-      checklist.cardid = card.id;
-      checklists.push(checklist);
+      // Call these requests sequentially to prevent hitting Trello's API rate limits.
+      checklists.push(await createCheckList(checklist, card.id));
     }
   }
 
-  // Added a limit to the number of requests to prevent hitting Trello's API rate limits.
-  const limit = pLimit(2);
-  return Promise.all(
-    checklists.map(checklist => limit(createCheckList, checklist)),
-  );
+  return checklists;
 }
 
 export async function createFullBoard(
