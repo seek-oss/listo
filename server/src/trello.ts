@@ -95,6 +95,7 @@ export async function createBoard(name: string): Promise<any> {
   };
 
   const res = await fetch(url, options);
+  if (!res.ok) throw new Error(res.statusText);
 
   return res.json();
 }
@@ -104,7 +105,9 @@ export async function deleteBoard(id: string): Promise<any> {
   const options = {
     method: 'DELETE',
   };
-  return fetch(url, options);
+  const res = await fetch(url, options);
+  if (!res.ok) throw new Error(res.statusText);
+  return res;
 }
 
 export async function createLists(
@@ -115,34 +118,28 @@ export async function createLists(
     method: 'POST',
   };
 
-  const responses = names.map(async name => {
-    const params = new Map([
-      ['idBoard', boardId],
-      ['name', name],
-    ]);
-    const url = await buildURL('lists', params);
+  names.push('Done');
 
-    return fetch(url, options);
-  });
+  const responses = await Promise.all(
+    names.map(async name => {
+      const params = new Map([
+        ['idBoard', boardId],
+        ['name', name],
+      ]);
 
-  // Done list
-  const params = new Map([
-    ['idBoard', boardId],
-    ['name', 'Done'],
-    ['pos', 'bottom'],
-  ]);
-  const url = await buildURL('lists', params);
-  const doneResponse = fetch(url, options);
-  responses.push(doneResponse);
+      if (name === 'Done') params.set('pos', 'bottom');
+      const url = await buildURL('lists', params);
 
-  const awaitedResponses = await Promise.all(responses);
+      const res = await fetch(url, options);
+      if (!res.ok) throw new Error(res.statusText);
+      return res.json();
+    }),
+  );
 
-  return Promise.all(awaitedResponses.map(response => response.json()));
+  return responses;
 }
 
-export async function createCards(
-  cards: TrelloCard[],
-): Promise<Promise<any>[]> {
+export async function createCards(cards: TrelloCard[]): Promise<any[]> {
   const responses = await Promise.all(
     cards.map(async card => {
       const params = new Map([
@@ -156,11 +153,14 @@ export async function createCards(
         method: 'POST',
       };
 
-      return fetch(url, options);
+      const res = await fetch(url, options);
+      if (!res.ok) throw new Error(res.statusText);
+
+      return res.json();
     }),
   );
 
-  return Promise.all(responses.map(response => response.json()));
+  return responses;
 }
 
 export async function createCheckList(
@@ -172,7 +172,6 @@ export async function createCheckList(
   ]);
   const url = await buildURL('checklists', params);
 
-  // console.log(url);
   const options = {
     method: 'POST',
   };
@@ -206,7 +205,6 @@ export async function createCheckList(
 
 export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
   let checklists = [];
-  const limit = pLimit(5);
 
   for (let card of cards) {
     for (let checklist of card.checklists) {
@@ -215,6 +213,8 @@ export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
     }
   }
 
+  // Added a limit to the number of requests to prevent hitting Trello's API rate limits.
+  const limit = pLimit(3);
   return Promise.all(
     checklists.map(checklist => limit(createCheckList, checklist)),
   );
@@ -270,8 +270,8 @@ export async function createFullBoard(
               name: checklist.question,
               completed: checklist.tools
                 ? checklist.tools.some(checklistTool =>
-                  inputData.selectedTools.includes(checklistTool),
-                )
+                    inputData.selectedTools.includes(checklistTool),
+                  )
                 : false,
             }),
           ),
@@ -284,7 +284,7 @@ export async function createFullBoard(
     }
   }
 
-  const cardResponses = await Promise.all(await createCards(cards));
+  const cardResponses = await createCards(cards);
 
   for (let card of cards) {
     const cardFound = cardResponses.find(
@@ -314,6 +314,7 @@ export async function addMember(
   };
 
   const res = await fetch(url, options);
+  if (!res.ok) throw new Error(res.statusText);
 
   return res.json();
 }
