@@ -214,7 +214,7 @@ export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
   }
 
   // Added a limit to the number of requests to prevent hitting Trello's API rate limits.
-  const limit = pLimit(3);
+  const limit = pLimit(2);
   return Promise.all(
     checklists.map(checklist => limit(createCheckList, checklist)),
   );
