@@ -166,7 +166,8 @@ export async function createCards(cards: TrelloCard[]): Promise<any[]> {
 export async function createCheckList(
   checklist: TrelloCheckList,
 ): Promise<Promise<any>[]> {
-  const limit = plimit(3);
+  // Trello API does not create all checklist items if we go above 1 request at a time.
+  const limit = plimit(1);
   const params = new Map([
     ['idCard', checklist.cardid],
     ['name', checklist.name],
@@ -213,7 +214,7 @@ async function createChecklistItem(
 
 export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
   let checklists = [];
-  const limit = plimit(3);
+  const limit = plimit(4);
 
   for (let card of cards) {
     for (let checklist of card.checklists) {
