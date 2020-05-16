@@ -68,15 +68,15 @@ const TEST_DATA_CREATE = {
     },
   ],
   selectedModulesByCategory: {
-    general: ['services', 'abuse', 'threat_modeling'],
-    test: ['test_long_checklist'],
+    general: ['services', 'abuse'],
+    // test: ['test_long_checklist'],
     code: ['authentication'],
   },
   projectMetaResponses: {
     boardName: 'Google Doodle',
     slackTeam: 'awesome',
     slackUserName: 'julian',
-    trelloEmail: 'asdfd@sdfadf',
+    trelloEmail: 'asdfd@sdfadfdfsdfsfdgdsgsfdgd.com',
     riskLevel: 'High Risk',
   },
   selectedTools: ['Gantry'],
@@ -102,7 +102,7 @@ const TEST_DATA_CREATE = {
 
     if (program.createBoard) {
       const url = 'http://localhost:8000/api/createBoard';
-      const data = TEST_DATA_CREATE;
+      const data = TEST_DATA_FULL_BOARD;
       const date = new Date(Date.now());
       data.projectMetaResponses.boardName = `Board_${date
         .getSeconds()

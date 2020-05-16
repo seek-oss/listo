@@ -89,7 +89,9 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
       const project: DatabaseModel = { metaData: inputData };
       projectId = await db.create(project);
     } catch (err) {
-      console.log(`Failed to store project ${projectId}.`, err);
+      throw new Error(
+        `Failed to store project ${projectId} in the database: ${err}.`,
+      );
     }
 
     try {
@@ -98,7 +100,22 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
         inputData,
         listoData,
       );
+    } catch (err) {
+      await slack.sendMessage(
+        JSON.stringify({
+          Status: `Failed to create Trello board for ${inputData.projectMetaResponses.boardName}.`,
+          Project: buildProjectURL(req.protocol, req.hostname, projectId),
+          ProjectDetails: inputData.projectMetaResponses,
+          Environment: process.env.STAGE,
+        }),
+      );
 
+      throw new Error(
+        `Failed to create Trello board for project ${projectId}: ${err}.`,
+      );
+    }
+
+    try {
       if (inputData.projectMetaResponses.trelloEmail) {
         await trello.addMember(
           board.id,
@@ -106,24 +123,17 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
         );
       }
     } catch (err) {
-      console.log(`Failed to create Trello board for ${projectId}.`, err);
-
-      await slack.sendMessage(
-        JSON.stringify({
-          Status: `Failed to create board for ${inputData.projectMetaResponses.boardName}.`,
-          Project: buildProjectURL(req.protocol, req.hostname, projectId),
-          ProjectDetails: inputData.projectMetaResponses,
-          Environment: process.env.STAGE,
-        }),
+      // Logging the error but not failing the response. We might want to change this in the future to throw an error to the client.
+      console.log(
+        `Failed to add Trello user with email ${inputData.projectMetaResponses.trelloEmail} to project ${projectId}: ${err}.`,
       );
     }
 
     try {
       await db.update(projectId, board.shortUrl);
     } catch (err) {
-      console.log(
-        `Failed to update project (${projectId}) with board url ${board.shortUrl}...`,
-        err,
+      throw new Error(
+        `Failed to update project (${projectId}) with board url ${board.shortUrl}: ${err}.`,
       );
     }
 
@@ -138,7 +148,9 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
         }),
       );
     } catch (err) {
-      console.log(`Failed to send Slack alert for Project ${projectId}`, err);
+      throw new Error(
+        `Failed to send Slack alert for Project ${projectId}: ${err}`,
+      );
     }
 
     res.json({
