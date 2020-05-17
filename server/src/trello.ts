@@ -182,7 +182,7 @@ export async function createCheckList(
   if (!res.ok) throw new Error(res.statusText);
   const trelloChecklist = await res.json();
 
-  return Promise.all(
+  return await Promise.all(
     checklist.items.map(checklistItem =>
       limit(createChecklistItem, checklistItem, trelloChecklist.id),
     ),
@@ -214,7 +214,7 @@ async function createChecklistItem(
 
 export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
   let checklists = [];
-  const limit = plimit(4);
+  const limit = plimit(2);
 
   for (let card of cards) {
     for (let checklist of card.checklists) {
@@ -223,7 +223,7 @@ export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
     }
   }
 
-  return Promise.all(checklists);
+  return await Promise.all(checklists);
 }
 
 export async function createFullBoard(
