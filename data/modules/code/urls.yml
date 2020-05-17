@@ -1,5 +1,5 @@
 category: Code
-description: Does your component build, parse, read or write URL's or redirect users to another URL?
+assessmentQuestion: Does your component build, parse, read or write URL's or redirect users to another URL?
 minimumRisk: Medium Risk
 checkLists:
   General:

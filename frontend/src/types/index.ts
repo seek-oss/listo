@@ -57,7 +57,7 @@ export interface ModuleCategory {
 export interface Module {
   title: string;
   category: string;
-  description: string;
+  assessmentQuestion: string;
   response?: boolean; // User's response
   minimumRisk?: string;
   checkLists?: { [key: string]: CheckList[] };

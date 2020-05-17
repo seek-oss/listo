@@ -1,5 +1,5 @@
 category: General
-description: Have you performed a theat model of your application or feature (aka a Threat Model)?
+assessmentQuestion: Have you performed a theat model of your application or feature (aka a Threat Model)?
 minimumRisk: Low Risk
 checkLists:
   Threat Assessment:

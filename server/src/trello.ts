@@ -42,7 +42,7 @@ export interface TrelloCard {
   id?: string;
   name: string;
   category: string;
-  description: string;
+  assessmentQuestion: string;
   questions?: string;
   tags: string;
   listId?: string;
@@ -145,7 +145,7 @@ export async function createCards(cards: TrelloCard[]): Promise<any[]> {
       const params = new Map([
         ['idList', card.listId],
         ['name', card.name],
-        ['desc', card.description],
+        ['desc', card.assessmentQuestion],
       ]);
       const url = await buildURL('cards', params);
 
@@ -246,7 +246,7 @@ export async function createFullBoard(
 
       const list = listsData.find(list => list.name === category);
 
-      let desc = [selectedCategory[moduleKey].description];
+      let desc = [selectedCategory[moduleKey].assessmentQuestion];
       let resources = selectedCategory[moduleKey].resources;
 
       if (resources) {

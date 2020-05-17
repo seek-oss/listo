@@ -63,6 +63,11 @@ const ModuleComponent = ({
       >
         <Typography component="div" className={classes.column}>
           <Box className={classes.checklistSummary}>
+            {readOnlyMode && (
+                <Typography >
+                  {moduleObject.title}
+                </Typography>
+            )}
             {!readOnlyMode && (
               <FormControlLabel
                 onClick={event => event.stopPropagation()}
@@ -96,7 +101,7 @@ const ModuleComponent = ({
             ) : null}
           </Box>
           <Typography variant="caption" gutterBottom>
-            {moduleObject.description}
+            {moduleObject.assessmentQuestion}
           </Typography>
         </Typography>
       </ExpansionPanelSummary>

@@ -1,5 +1,5 @@
 category: Data
-description: We will be using a NoSQL database to store data (e.g Dynamo or Mongo)
+assessmentQuestion: We will be using a NoSQL database to store data (e.g Dynamo or Mongo)
 minimumRisk: Low Risk
 checkLists:
   General:

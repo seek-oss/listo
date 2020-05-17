@@ -1,5 +1,5 @@
 category: General
-description: Guidance related to application telemetry data and monitoring
+assessmentQuestion: Guidance related to application telemetry data and monitoring
 minimumRisk: Low Risk
 checkLists:
   Logging:

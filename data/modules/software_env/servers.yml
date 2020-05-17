@@ -1,5 +1,5 @@
 category: Software Environment
-description: Will your team need to manage servers (EC2/VM/Physical) to deploy your application?
+assessmentQuestion: Will your team need to manage servers (EC2/VM/Physical) to deploy your application?
 minimumRisk: Low Risk
 checkLists:
   General:
