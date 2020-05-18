@@ -63,7 +63,7 @@ const Summary = () => {
                   {Object.entries(categoryData).map(
                     ([moduleKey, moduleObject]) => (
                       <Module
-                        key={moduleKey}
+                        key={moduleObject.title}
                         moduleObject={moduleObject}
                         handleSelectModule={() => {}}
                         categoryKey={categoryKey}

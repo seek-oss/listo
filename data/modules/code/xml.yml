@@ -1,5 +1,5 @@
 category: Code
-description: Does your code work with, write or read XML (including file formats like Word and PDF)?
+assessmentQuestion: Does your code work with, write or read XML (including file formats like Word and PDF)?
 minimumRisk: Low Risk
 checkLists:
   General:

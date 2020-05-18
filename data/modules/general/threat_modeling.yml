@@ -1,6 +1,15 @@
 category: General
-description: Have you performed a theat model of your application or feature (aka a Threat Model)?
+assessmentQuestion: Have you performed a theat model on your project?
 minimumRisk: Low Risk
+guidance: >
+  Threat modeling is about using models to find security problems. Using a model means abstracting away a lot of details to provide 
+  a look at a bigger picture, rather than the code itself. You model because it enables you to find issues in things you haven't built yet,
+  and because it enables you to catch a problem before it starts. Lastly, you threat model as a way to anticipate the threats that could 
+  affect you[*](https://threatmodelingbook.com/).
+resources:
+  - "[Threat Modeling: What, Why, and How?](https://misti.com/infosec-insider/threat-modeling-what-why-and-how)"
+  - "[STRIDE checklists are from the EoP card game](https://github.com/adamshostack/eop)."
+  - "[The `Threat Assessment` checklist is from Threat Modeling: Designing for Security.](https://threatmodelingbook.com/)"
 checkLists:
   Threat Assessment:
     - question: We have created an architecture or dataflow diagram of the software, can tell a story about the system and consider what could go wrong without using words such as "sometimes" or "also".
@@ -83,9 +92,5 @@ checkLists:
     - question: Reflect input back to a user, like cross site scripting <J>
     - question: You include user-generated content within your page, possibly including the content of random URLs <Q>
     - question: Inject a command that the system will run at a higher privilege level <K>
-resources:
-  - "[Threat Modeling: What, Why, and How?](https://misti.com/infosec-insider/threat-modeling-what-why-and-how)."
-  - "[Checklists above are from EoP](https://github.com/adamshostack/eop)."
-  - "[Diagram checklists are from Threat Modeling: Designing for Security](https://threatmodelingbook.com/)"
 tags: WebApp, API, Worker, iOS, Android
 title: Threat Modeling

@@ -63,6 +63,11 @@ const ModuleComponent = ({
       >
         <Typography component="div" className={classes.column}>
           <Box className={classes.checklistSummary}>
+            {readOnlyMode && (
+              <Typography >
+                {moduleObject.title}
+              </Typography>
+            )}
             {!readOnlyMode && (
               <FormControlLabel
                 onClick={event => event.stopPropagation()}
@@ -96,12 +101,19 @@ const ModuleComponent = ({
             ) : null}
           </Box>
           <Typography variant="caption" gutterBottom>
-            {moduleObject.description}
+            {moduleObject.assessmentQuestion}
           </Typography>
         </Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
         <List dense={true}>
+        {moduleObject.guidance ?
+          (
+            <Typography paragraph gutterBottom >
+                <ReactMarkdown source={moduleObject.guidance} />
+            </Typography>
+          ) : null
+        }
           {Object.entries(moduleObject.checkLists || []).map(
             ([key, checkLists]) => {
               return (
@@ -120,10 +132,10 @@ const ModuleComponent = ({
                               className={classes.questionIcon}
                             />
                           ) : (
-                            <PanoramaFishEyeIcon
-                              className={classes.questionIcon}
-                            />
-                          )}
+                              <PanoramaFishEyeIcon
+                                className={classes.questionIcon}
+                              />
+                            )}
                         </div>
                         <Box>
                           <ReactMarkdown source={checkListItem.question} />

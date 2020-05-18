@@ -1,5 +1,5 @@
 category: Code
-description: Is your functionality exposed within a web browser and implementing requests
+assessmentQuestion: Is your functionality exposed within a web browser and implementing requests?
   that make sensitive user changes (e.g. password change, CV upload, send message,
   etc)?
 minimumRisk: Low Risk

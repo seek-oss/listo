@@ -247,19 +247,24 @@ export async function createFullBoard(
 
       const list = listsData.find(list => list.name === category);
 
-      let desc = [selectedCategory[moduleKey].description];
+      let trelloDescription = [selectedCategory[moduleKey].assessmentQuestion];
       let resources = selectedCategory[moduleKey].resources;
+      let moduleDescription = selectedCategory[moduleKey].guidance;
+
+      moduleDescription
+        ? trelloDescription.push('', '### Guidance:', '', moduleDescription)
+        : null;
 
       if (resources) {
         resources = resources.map(resource => `+ ${resource}`);
-        desc.push('', 'Resources:', '');
-        desc = desc.concat(resources);
+        trelloDescription.push('', '### Resources:', '');
+        trelloDescription = trelloDescription.concat(resources);
       }
 
       let cardObj: TrelloCard = {
         name: selectedCategory[moduleKey].title,
         category: selectedCategory[moduleKey].category,
-        description: desc.join('\n'),
+        description: trelloDescription.join('\n'),
         tags: selectedCategory[moduleKey].tags,
         listId: list.id,
       };

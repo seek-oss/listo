@@ -1,5 +1,5 @@
 category: Code
-description: Does your code authenticate or authorize users, tokens, sessions, or other?
+assessmentQuestion: Does your code authenticate or authorize users, tokens, sessions, or other?
 minimumRisk: Low Risk
 checkLists:
   Authentication:

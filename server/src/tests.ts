@@ -69,7 +69,7 @@ const TEST_DATA_CREATE = {
   ],
   selectedModulesByCategory: {
     general: ['services', 'abuse'],
-    // test: ['test_long_checklist'],
+    test: ['test_long_checklist'],
     code: ['authentication'],
   },
   projectMetaResponses: {
@@ -102,7 +102,7 @@ const TEST_DATA_CREATE = {
 
     if (program.createBoard) {
       const url = 'http://localhost:8000/api/createBoard';
-      const data = TEST_DATA_FULL_BOARD;
+      const data = TEST_DATA_CREATE;
       const date = new Date(Date.now());
       data.projectMetaResponses.boardName = `Board_${date
         .getSeconds()

@@ -1,5 +1,5 @@
 category: Software Environment
-description: Will you be deploying your application inside a container?
+assessmentQuestion: Will you be deploying your application inside a container?
 minimumRisk: Low Risk
 checkLists:
   AWS ECR:

@@ -1,5 +1,5 @@
 category: Code
-description: Does your project introduce or utilize a third-party library or service?
+assessmentQuestion: Does your project introduce or utilize a third-party library or service?
 minimumRisk: Medium Risk
 checkLists:
   General:

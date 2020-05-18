@@ -1,5 +1,5 @@
 category: Service Provider
-description: Will you be deploying your application outside of our AWS Org (i.e. Datacentre)?
+assessmentQuestion: Will you be deploying your application outside of our AWS Org (i.e. Datacentre)?
 minimumRisk: Low Risk
 checkLists:
   General:
