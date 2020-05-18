@@ -1,5 +1,5 @@
 category: Data
-assessmentQuestion: We will be using data in simple object store (i.e. S3)
+assessmentQuestion: We will be using data in simple object store (i.e. S3)?
 minimumRisk: Low Risk
 checkLists:
   S3:

@@ -110,7 +110,7 @@ const ModuleComponent = ({
         {moduleObject.guidance ?
           (
             <Typography paragraph gutterBottom >
-              {moduleObject.guidance}
+                <ReactMarkdown source={moduleObject.guidance} />
             </Typography>
           ) : null
         }

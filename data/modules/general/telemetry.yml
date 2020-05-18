@@ -1,5 +1,5 @@
 category: General
-assessmentQuestion: Guidance related to application telemetry data and monitoring
+assessmentQuestion: We need to monitor the behaviour (security or product) and health (reliability or perf) of our running service? 
 minimumRisk: Low Risk
 checkLists:
   Logging:

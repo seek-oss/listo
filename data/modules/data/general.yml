@@ -1,5 +1,5 @@
 category: Data
-assessmentQuestion: General guidelines for storing persistent data
+assessmentQuestion: We are storing data to the filesystem or a database?
 minimumRisk: High Risk
 checkLists:
   General:
@@ -19,4 +19,4 @@ resources:
   - "[Using Audit Logs for Security and Compliance](https://logz.io/blog/audit-logs-security-compliance/)."
   - "[Data Retention Policies](https://searchdatabackup.techtarget.com/definition/data-retention-policy)."
 tags: WebApp, API, iOS, Android, Worker
-title: General
+title: General Data Storage Guidance
