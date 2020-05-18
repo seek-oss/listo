@@ -58,6 +58,7 @@ export interface Module {
   title: string;
   category: string;
   assessmentQuestion: string;
+  guidance?: string;
   response?: boolean; // User's response
   minimumRisk?: string;
   checkLists?: { [key: string]: CheckList[] };

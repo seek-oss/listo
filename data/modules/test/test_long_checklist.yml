@@ -1,5 +1,7 @@
 category: General
 assessmentQuestion: Test for modules that contain lots of checklists.
+guidance: >
+      Hello this is a test description.
 minimumRisk: Low Risk
 checkLists:
   Diagram:

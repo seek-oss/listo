@@ -1,5 +1,5 @@
 category: Service Provider
-assessmentQuestion: Will you be deploying your application within AWS
+assessmentQuestion: Will you be deploying your application within AWS?
 minimumRisk: Low Risk
 checkLists:
   General:

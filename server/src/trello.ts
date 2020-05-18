@@ -42,7 +42,7 @@ export interface TrelloCard {
   id?: string;
   name: string;
   category: string;
-  assessmentQuestion: string;
+  description: string;
   questions?: string;
   tags: string;
   listId?: string;
@@ -145,7 +145,7 @@ export async function createCards(cards: TrelloCard[]): Promise<any[]> {
       const params = new Map([
         ['idList', card.listId],
         ['name', card.name],
-        ['desc', card.assessmentQuestion],
+        ['desc', card.description],
       ]);
       const url = await buildURL('cards', params);
 
@@ -246,19 +246,24 @@ export async function createFullBoard(
 
       const list = listsData.find(list => list.name === category);
 
-      let desc = [selectedCategory[moduleKey].assessmentQuestion];
+      let trelloDescription = [selectedCategory[moduleKey].assessmentQuestion];
       let resources = selectedCategory[moduleKey].resources;
+      let moduleDescription = selectedCategory[moduleKey].guidance;
+
+      moduleDescription
+        ? trelloDescription.push('', '### Guidance:', '', moduleDescription)
+        : null;
 
       if (resources) {
         resources = resources.map(resource => `+ ${resource}`);
-        desc.push('', 'Resources:', '');
-        desc = desc.concat(resources);
+        trelloDescription.push('', '### Resources:', '');
+        trelloDescription = trelloDescription.concat(resources);
       }
 
       let cardObj: TrelloCard = {
         name: selectedCategory[moduleKey].title,
         category: selectedCategory[moduleKey].category,
-        description: desc.join('\n'),
+        description: trelloDescription.join('\n'),
         tags: selectedCategory[moduleKey].tags,
         listId: list.id,
       };
