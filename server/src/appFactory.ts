@@ -16,6 +16,7 @@ const {
   SLACK_CHANNEL_LINK,
   SLACK_TARGET_CHANNEL,
   TRELLO_BOARD_LINK,
+  SERVER_URL
 } = process.env;
 
 function buildProjectURL(
@@ -23,7 +24,9 @@ function buildProjectURL(
   host: string,
   projectId: string,
 ): string {
-  return `${scheme}://${host}/project/${projectId}`;
+  // Support a custom URL, e.g. if listo is behind a reverse proxy
+  const authority = SERVER_URL ? SERVER_URL.replace(/\/$/, '') : `${scheme}://${host}`;
+  return `${authority}/project/${projectId}`;
 }
 
 function addMandatoryModules(
