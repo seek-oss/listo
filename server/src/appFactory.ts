@@ -24,11 +24,8 @@ function buildProjectURL(
   host: string,
   projectId: string,
 ): string {
-  let authority = `${scheme}://${host}`;
   // Support a custom URL, e.g. if listo is behind a reverse proxy
-  if (SERVER_URL) {
-    authority = SERVER_URL.replace(/\/$/, '');
-  }
+  const authority = SERVER_URL ? SERVER_URL.replace(/\/$/, '') : `${scheme}://${host}`;
   return `${authority}/project/${projectId}`;
 }
 
