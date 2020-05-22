@@ -26,3 +26,6 @@ export SLACK_TARGET_CHANNEL='#listo'
 
 # OPTIONAL - Slack Channel Deep link - https://api.slack.com/reference/deep-linking
 # export SLACK_CHANNEL_LINK='https://slack.com/app_redirect?channel=listo&team=T02P5698'
+
+# OPTIONAL - Server URL, e.g. if the server hosting listo is fronted by a load balancer or reverse proxy
+# export SERVER_URL='https://example.com'
