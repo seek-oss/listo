@@ -61,12 +61,12 @@ export interface Module {
   guidance?: string;
   response?: boolean; // User's response
   minimumRisk?: string;
-  checkLists?: { [key: string]: CheckList[] };
+  checkLists: {[checklistName: string]: ChecklistItem[]};
   tags?: string;
   resources?: string[];
 }
 
-export interface CheckList {
+export interface ChecklistItem {
   question: string;
   key?: string;
   tools?: string[];
