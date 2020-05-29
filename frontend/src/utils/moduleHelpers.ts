@@ -1,4 +1,4 @@
-import { ModuleCategory } from './../types/index';
+import { ModuleCategory, ModuleCategories } from './../types/index';
 import { Tools, ChecklistItem, Module } from '../types';
 
 const getAllChecklistItems = (m: Module) => {
@@ -45,6 +45,27 @@ export const getNumberOfCheckListItems = (m: Module) => {
   return getAllChecklistItems(m).length;
 };
 
-// Ideally we'd store the category title in the data. This isn't ideal
 export const getCategoryName = (categoryData: ModuleCategory) =>
   Object.values(categoryData)[0].category;
+
+export const getModuleDescription = (m: Module) => { 
+  if(!m) return "";
+  let description = [m.assessmentQuestion];
+  let resources = m.resources;
+  let moduleDescription = m.guidance;
+
+  if(moduleDescription) description.push('', '#### Guidance:', '', moduleDescription);
+
+  if (resources) {
+    description.push('', '#### Resources:', '');
+    resources = resources.map(resource => `+ ${resource}`);
+    description = description.concat(resources);
+  }
+
+  return description.join('\n');
+}
+export const getModule = (categories: ModuleCategories, categoryName: string, moduleName: string) => {
+  if(!categories || !Object.entries(categories).length) return undefined;
+  const moduleCategory = categories[categoryName];
+  return moduleCategory ? moduleCategory[moduleName] : undefined;
+}

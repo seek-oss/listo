@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, {  useContext } from 'react';
 import {
   Checkbox,
   FormControlLabel,
@@ -17,7 +17,6 @@ import ReactMarkdown from 'react-markdown';
 import {
   getNumberOfAnsweredQuestions,
   getNumberOfCheckListItems,
-  getSelectedTools,
 } from '../utils/moduleHelpers';
 import Checklists from './Checklists';
 import { useStyles } from '../styles';
@@ -113,7 +112,7 @@ const ModuleComponent = ({
             ) : null
           }
         
-        <Checklists module={moduleObject} />
+        <Checklists module={moduleObject} readOnlyMode={true}/>
 
         </Grid>
       </ExpansionPanelDetails>

@@ -117,7 +117,7 @@ const App: React.FC = ({ children }) => {
                 <Faq path="/faq" listoMeta={meta} />
                 <Assessment path="/assessment" />
                 <Project path="project/:projectId" listoMeta={meta} />
-                {/* <QuickChecklist path="checklist/:moduleName" categories={categories} /> */}
+                <QuickChecklist path="checklist/:categoryName/:moduleName"/>
               </Router>
             </Paper>
           </main>

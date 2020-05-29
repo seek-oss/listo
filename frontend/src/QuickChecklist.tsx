@@ -1,32 +1,25 @@
 import { RouteComponentProps } from '@reach/router';
-import React, { useState, useEffect, useContext } from 'react';
-import {
-  Box,
-  Typography,
-  List,
-  ListItemText,
-  ListItem,
-} from '@material-ui/core';
-import {
-  Result,
-  PickedCategories,
-  ProjectMetaResponses,
-  Meta,
-  DatabaseModel,
-  ModuleCategories
-} from './types/index';
+import React, { useContext } from 'react';
+import { Typography } from '@material-ui/core';
+import ReactMarkdown from 'react-markdown';
+import { getModuleDescription, getModule } from './utils/moduleHelpers';
+import { AppContext } from './context';
+import Checklists from './components/Checklists';
 
 interface ProjectProps extends RouteComponentProps {
   moduleName?: string;
-  categories: ModuleCategories;
+  categoryName?: string;
 }
 
 export const QuickChecklist = (props: ProjectProps) => {
-  const [errorState, setErrorState] = useState(false);
-  let moduleName = props.moduleName;
+  const { categories } = useContext(AppContext);
 
+  const categoryName = props.categoryName || "";
+  const moduleName = props.moduleName || "";
 
-  if (errorState) {
+  const module = getModule(categories, categoryName, moduleName);
+
+  if (!module) {
     return (
       <React.Fragment>
         <Typography variant="h4" gutterBottom>
@@ -34,7 +27,7 @@ export const QuickChecklist = (props: ProjectProps) => {
         </Typography>
 
         <Typography variant="subtitle1" gutterBottom>
-          We can't seem to find your module with ID: {moduleName}.
+          We can't seem to find your module with category and title of: {`${categoryName} -> ${moduleName}`}.
         </Typography>
       </React.Fragment>
     );
@@ -42,24 +35,14 @@ export const QuickChecklist = (props: ProjectProps) => {
     return (
       <React.Fragment>
         <Typography variant="h4" gutterBottom>
-          Module Details - {moduleName}
+          Module - {module.title}
         </Typography>
-
-        {/* {Object.entries(props.categories).map(
-          ([category, moduleNames]) => (
-            <Box>
-              <Typography variant="subtitle1">{category}</Typography>
-
-              <List dense={true}>
-                {moduleNames.map(moduleName => (
-                  <ListItem key={moduleName}>
-                    <ListItemText primary={moduleName} />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          ),
-        )} */}
+        
+        <Typography variant="subtitle1" gutterBottom>
+          <ReactMarkdown source={getModuleDescription(module)} />
+        </Typography>
+        
+      <Checklists module={module} readOnlyMode={false} />
       </React.Fragment>
     );
   }

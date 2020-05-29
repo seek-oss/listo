@@ -5,6 +5,7 @@ import {
   ListItem,
   Box,
   Chip,
+  Checkbox,
 } from '@material-ui/core';
 import { Module } from '../types';
 import { AppContext } from '../context';
@@ -19,10 +20,34 @@ import {
 
 interface Props {
   module: Module;
+  readOnlyMode: boolean;
+}
+interface ChecklistProps {
+  toolsSupported: string[];
+  readOnlyMode: boolean;
 }
 
+const ListoCheckbox = (props: ChecklistProps) => {
+  const classes = useStyles();
+  if (props.toolsSupported.length > 0) {
+    return (
+      <div className={classes.checklistQuestion}>
+        <CheckCircleOutlineIcon className={classes.questionIcon} />
+      </div>
+      );
+  } else if (!props.readOnlyMode) {
+    return ( <Checkbox color="primary" className={classes.checkboxIcon} />);
+  }
+  return (
+    <div className={classes.checklistQuestion}>
+      <PanoramaFishEyeIcon className={classes.questionIcon} />
+    </div>
+  );
+};
+
 const Checklists = ({
-  module
+  module,
+  readOnlyMode
 }: Props) => {
   const { tools } = useContext(AppContext);
   const classes = useStyles();
@@ -30,51 +55,50 @@ const Checklists = ({
   const selectedTools = getSelectedTools(tools);
 
   return (
-        <List dense={true}>
-          {Object.entries(module.checkLists).map(
-            ([checklistName, checklistItems]) => {
-              return (
-                <Fragment key={checklistName}>
-                  <Typography>{checklistName}</Typography>
-                  {checklistItems.map(checklistItem => {
-                    const toolsSupported = getSupportedTools(
-                      checklistItem,
-                      selectedTools,
-                    );
-                    return (
-                      <ListItem key={checklistItem.question}>
-                        <div className={classes.checklistQuestion}>
-                          {toolsSupported.length > 0 ? (
-                            <CheckCircleOutlineIcon
-                              className={classes.questionIcon}
-                            />
-                          ) : (
-                              <PanoramaFishEyeIcon
-                                className={classes.questionIcon}
-                              />
-                            )}
-                        </div>
-                        <Box>
-                          <ReactMarkdown source={checklistItem.question} />
-                          <div className={classes.toolsWrapper}>
-                            {toolsSupported.map((tool, index) => (
-                              <Chip
-                                key={index}
-                                className={classes.toolChip}
-                                label={tool}
-                              />
-                            ))}
-                          </div>
-                        </Box>
-                      </ListItem>
-                    );
-                  })}
-                </Fragment>
-              );
-            },
-          )}
-        </List>
-      );
+    <List dense={true}>
+      {Object.entries(module.checkLists).map(
+        ([checklistName, checklistItems]) => {
+          return (
+            <Fragment key={checklistName}>
+              <Typography>{checklistName}</Typography>
+              {checklistItems.map(checklistItem => {
+                const toolsSupported = getSupportedTools(
+                  checklistItem,
+                  selectedTools,
+                );
+                return (
+                  <ListItem key={checklistItem.question}>
+                    <ListoCheckbox readOnlyMode={readOnlyMode} toolsSupported={toolsSupported} />
+                    <Box>
+                      <ReactMarkdown source={checklistItem.question} />
+                      <div className={classes.toolsWrapper}>
+                        {toolsSupported.length > 0 ? toolsSupported.map((tool, index) => (
+                          <Chip
+                            key={index}
+                            className={classes.toolChip}
+                            label={tool}
+                          />
+                        )): null
+                        }
+                        {!readOnlyMode && checklistItem.tools ? checklistItem.tools.map((tool, index) => (
+                          <Chip
+                            key={index}
+                            className={classes.toolChip}
+                            label={tool}
+                          />
+                        )): null
+                        }
+                      </div>
+                    </Box>
+                  </ListItem>
+                );
+              })}
+            </Fragment>
+          );
+        },
+      )}
+    </List>
+  );
 };
 
 export default Checklists;
