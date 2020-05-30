@@ -16,7 +16,7 @@ const {
   SLACK_CHANNEL_LINK,
   SLACK_TARGET_CHANNEL,
   TRELLO_BOARD_LINK,
-  SERVER_URL
+  SERVER_URL,
 } = process.env;
 
 function buildProjectURL(
@@ -25,7 +25,9 @@ function buildProjectURL(
   projectId: string,
 ): string {
   // Support a custom URL, e.g. if listo is behind a reverse proxy
-  const authority = SERVER_URL ? SERVER_URL.replace(/\/$/, '') : `${scheme}://${host}`;
+  const authority = SERVER_URL
+    ? SERVER_URL.replace(/\/$/, '')
+    : `${scheme}://${host}`;
   return `${authority}/project/${projectId}`;
 }
 

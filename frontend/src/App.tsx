@@ -28,6 +28,7 @@ import { prepareProjectMeta } from './utils/prepareProjectMeta';
 import { getSelectedTools } from './utils/moduleHelpers';
 import { API_URL } from './constants';
 import { QuickChecklist } from './QuickChecklist';
+import { SearchChecklists } from './SearchChecklists';
 
 const App: React.FC = ({ children }) => {
   const classes = useStyles();
@@ -118,6 +119,7 @@ const App: React.FC = ({ children }) => {
                 <Assessment path="/assessment" />
                 <Project path="project/:projectId" listoMeta={meta} />
                 <QuickChecklist path="checklist/:categoryName/:moduleName"/>
+                <SearchChecklists path="/checklists"/>
               </Router>
             </Paper>
           </main>

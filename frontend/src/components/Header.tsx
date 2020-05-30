@@ -27,6 +27,16 @@ const Header = () => {
               FAQ
             </Typography>
           </Link>
+          <Link to="/checklists" className={classes.logo}>
+            <Typography
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.menuItem}
+            >
+              CHECKLISTS
+            </Typography>
+          </Link>
         </Toolbar>
       </AppBar>
     </React.Fragment>
