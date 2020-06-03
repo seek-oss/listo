@@ -1,11 +1,15 @@
 import { promises as fs } from 'fs';
 import * as uuid from 'uuid';
 import { Repository } from './types';
-import { DatabaseModel } from '../../frontend/src/types';
+import {
+  ProjectModel,
+  QuickChecklistModel,
+  isProject,
+} from '../../frontend/src/types';
 import * as lockfile from 'proper-lockfile';
 
 export class Disk implements Repository {
-  db: Map<string, DatabaseModel>;
+  db: Map<string, ProjectModel | QuickChecklistModel>;
   diskPath: string;
 
   constructor(diskPath: string) {
@@ -41,7 +45,7 @@ export class Disk implements Repository {
     }
   }
 
-  public async create(project: DatabaseModel): Promise<string> {
+  public async create(project: ProjectModel): Promise<string> {
     const date = new Date().toISOString();
     const projectId = uuid.v4();
 
@@ -59,9 +63,10 @@ export class Disk implements Repository {
   public async update(projectId: string, boardLink: string): Promise<string> {
     const project = this.db.get(projectId);
 
-    if (!project) {
+    if (!project || !isProject(project)) {
       throw `Can't find project with id: ${projectId}`;
     }
+
     project.boardLink = boardLink;
     project.updatedAt = new Date().toISOString();
 
@@ -71,13 +76,44 @@ export class Disk implements Repository {
     return projectId;
   }
 
-  public async get(projectId: string): Promise<DatabaseModel> {
+  public async get(projectId: string): Promise<ProjectModel> {
     const project = this.db.get(projectId);
 
-    if (!project) {
+    if (!project || !isProject(project)) {
       throw `Can't find project with id: ${projectId}`;
     }
 
     return project;
+  }
+
+  public async getQuickChecklist(id: string): Promise<QuickChecklistModel> {
+    const quickChecklist = this.db.get(id);
+
+    if (!quickChecklist || isProject(quickChecklist)) {
+      throw `Can't find QuickChecklist with id: ${id}`;
+    }
+
+    return quickChecklist;
+  }
+
+  public async upsertQuickChecklist(
+    quickChecklist: QuickChecklistModel,
+  ): Promise<string> {
+    const date = new Date().toISOString();
+
+    try {
+      await this.getQuickChecklist(quickChecklist.id);
+    } catch (err) {
+      // Create a new QuickChecklist
+      const id = uuid.v4();
+      quickChecklist.id = id;
+      quickChecklist.createdAt = date;
+    }
+
+    quickChecklist.updatedAt = date;
+    this.db.set(quickChecklist.id, quickChecklist);
+    await this.saveDB();
+
+    return quickChecklist.id;
   }
 }

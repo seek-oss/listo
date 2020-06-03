@@ -7,7 +7,6 @@ import {
   Chip,
   Checkbox,
 } from '@material-ui/core';
-import { Module } from '../types';
 import { AppContext } from '../context';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye';
@@ -17,26 +16,40 @@ import {
   getSupportedTools,
   getSelectedTools,
 } from '../utils/moduleHelpers';
+import { Checklists, ChecklistItem } from '../types';
 
 interface Props {
-  module: Module;
   readOnlyMode: boolean;
+  checklists: Checklists;
 }
 interface ChecklistProps {
   toolsSupported: string[];
   readOnlyMode: boolean;
+  checklistItem: ChecklistItem;
+  checklistName: string;
+  checklistItemIndex: number;
 }
 
 const ListoCheckbox = (props: ChecklistProps) => {
   const classes = useStyles();
-  if (props.toolsSupported.length > 0) {
+  const { handleSelectChecklistItem } = useContext(AppContext);
+  if (props.toolsSupported.length) {
     return (
       <div className={classes.checklistQuestion}>
         <CheckCircleOutlineIcon className={classes.questionIcon} />
       </div>
       );
   } else if (!props.readOnlyMode) {
-    return ( <Checkbox color="primary" className={classes.checkboxIcon} />);
+    return (<Checkbox
+      checked={Boolean(props.checklistItem.checked)}
+      onChange={event => {
+        handleSelectChecklistItem(
+          props.checklistName,
+          props.checklistItemIndex,
+          event.target.checked
+        );
+      }}
+      color="primary" className={classes.checkboxIcon} />);
   }
   return (
     <div className={classes.checklistQuestion}>
@@ -45,9 +58,9 @@ const ListoCheckbox = (props: ChecklistProps) => {
   );
 };
 
-const Checklists = ({
-  module,
-  readOnlyMode
+const ChecklistsContainer = ({
+  readOnlyMode,
+  checklists
 }: Props) => {
   const { tools } = useContext(AppContext);
   const classes = useStyles();
@@ -56,29 +69,34 @@ const Checklists = ({
 
   return (
     <List dense={true}>
-      {Object.entries(module.checkLists).map(
+      {Object.entries(checklists).map(
         ([checklistName, checklistItems]) => {
           return (
             <Fragment key={checklistName}>
               <Typography>{checklistName}</Typography>
-              {checklistItems.map(checklistItem => {
+              {checklistItems.map((checklistItem, checklistItemIndex) => {
                 const toolsSupported = getSupportedTools(
                   checklistItem,
                   selectedTools,
                 );
                 return (
                   <ListItem key={checklistItem.question}>
-                    <ListoCheckbox readOnlyMode={readOnlyMode} toolsSupported={toolsSupported} />
+                    <ListoCheckbox 
+                     checklistName={checklistName}
+                     checklistItem={checklistItem}
+                     checklistItemIndex={checklistItemIndex}
+                     readOnlyMode={readOnlyMode}
+                     toolsSupported={toolsSupported} />
                     <Box>
                       <ReactMarkdown source={checklistItem.question} />
                       <div className={classes.toolsWrapper}>
-                        {toolsSupported.length > 0 ? toolsSupported.map((tool, index) => (
+                        {toolsSupported.map((tool, index) => (
                           <Chip
                             key={index}
                             className={classes.toolChip}
                             label={tool}
                           />
-                        )): null
+                        ))
                         }
                         {!readOnlyMode && checklistItem.tools ? checklistItem.tools.map((tool, index) => (
                           <Chip
@@ -86,7 +104,7 @@ const Checklists = ({
                             className={classes.toolChip}
                             label={tool}
                           />
-                        )): null
+                        )) : null
                         }
                       </div>
                     </Box>
@@ -101,4 +119,4 @@ const Checklists = ({
   );
 };
 
-export default Checklists;
+export default ChecklistsContainer;

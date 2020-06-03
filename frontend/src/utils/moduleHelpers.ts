@@ -50,16 +50,15 @@ export const getCategoryName = (categoryData: ModuleCategory) =>
 
 export const getModuleDescription = (m: Module) => { 
   if(!m) return "";
-  let description = [m.assessmentQuestion];
-  let resources = m.resources;
-  let moduleDescription = m.guidance;
+  const description = [m.assessmentQuestion];
+  const resources = m.resources;
+  const moduleDescription = m.guidance;
 
   if(moduleDescription) description.push('', '#### Guidance:', '', moduleDescription);
 
   if (resources) {
     description.push('', '#### Resources:', '');
-    resources = resources.map(resource => `+ ${resource}`);
-    description = description.concat(resources);
+    description.push(...resources.map(resource => `+ ${resource}`));
   }
 
   return description.join('\n');

@@ -1,7 +1,11 @@
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid';
 import { Repository } from './types';
-import { DatabaseModel } from '../../frontend/src/types';
+import {
+  ProjectModel,
+  QuickChecklistModel,
+  isProject,
+} from '../../frontend/src/types';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
 export class Dynamo implements Repository {
@@ -43,7 +47,7 @@ export class Dynamo implements Repository {
     }
   }
 
-  public async create(project: DatabaseModel): Promise<string> {
+  public async create(project: ProjectModel): Promise<string> {
     const date = new Date().toISOString();
     const projectId = uuid.v4();
 
@@ -80,7 +84,7 @@ export class Dynamo implements Repository {
     return projectId;
   }
 
-  public async get(projectId: string): Promise<DatabaseModel> {
+  public async get(projectId: string): Promise<ProjectModel> {
     const params = {
       TableName: this.tableName,
       Key: {
@@ -89,11 +93,54 @@ export class Dynamo implements Repository {
     };
 
     const data = await this.db.get(params).promise();
+    const project = <ProjectModel>data.Item;
 
-    if (!data.Item) {
+    if (!project || !isProject(project)) {
       throw 'Project not found';
     }
 
-    return <DatabaseModel>data.Item;
+    return project;
+  }
+
+  public async getQuickChecklist(id: string): Promise<QuickChecklistModel> {
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        id: id,
+      },
+    };
+
+    const data = await this.db.get(params).promise();
+    const quickChecklist = <QuickChecklistModel>data.Item;
+
+    if (!quickChecklist || isProject(quickChecklist)) {
+      throw 'Checklist not found';
+    }
+
+    return quickChecklist;
+  }
+
+  public async upsertQuickChecklist(
+    quickChecklist: QuickChecklistModel,
+  ): Promise<string> {
+    const date = new Date().toISOString();
+    const params = {
+      TableName: this.tableName,
+      Item: quickChecklist,
+    };
+
+    try {
+      await this.getQuickChecklist(quickChecklist.id);
+    } catch (err) {
+      // Create a new QuickChecklist
+      const id = uuid.v4();
+      quickChecklist.id = id;
+      quickChecklist.createdAt = date;
+    }
+
+    quickChecklist.updatedAt = date;
+    await this.db.put(params).promise();
+
+    return quickChecklist.id;
   }
 }

@@ -112,7 +112,7 @@ const ModuleComponent = ({
             ) : null
           }
         
-        <Checklists module={moduleObject} readOnlyMode={true}/>
+        <Checklists checklists={moduleObject.checkLists} readOnlyMode={true}/>
 
         </Grid>
       </ExpansionPanelDetails>
