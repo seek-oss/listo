@@ -26,7 +26,7 @@ The quickest way to get Listo running locally is to launch it via Docker Compose
   export TRELLO_TOKEN=fda876d8af87d6fa876adfa....8516dcf715
   ```
 
-3. Start the Listo service (server and UI) and local DynamoDB database:
+3. In the root directory, start the Listo service (server and UI):
 
   ```bash
   $ make serve
@@ -40,20 +40,12 @@ If you want to modify or debug Listo's code, it's often easier without using Doc
 
 ### Requirements
 
-Listo requires [Yarn](https://yarnpkg.com/) and [Docker](https://www.docker.com/) (only for the local Dynamo db).
+Listo requires [Yarn](https://yarnpkg.com/).
 
 > Note you will still need to have the `env.sh` configured as per [Getting Listo Running Locally](#getting-listo-running-locally).
 
 ### Server
 In the `server` directory:
-
-1. Start the DynamoDB local Docker instance:
-
-  ```bash
-  $ make start_db
-  ```
-
-2. Start the server by running:
 
   ```bash
   $ make serve
@@ -65,18 +57,24 @@ In the `server` directory:
 
 In the `frontend` directory:
 
-1. Run the following to launch the UI:
-
 ```bash
 $ make serve
 ```
 
 > See the [Makefile](./frontend/Makefile) for more options.
 
-2. The browser should auto open, if not you can navigate to:
+The browser should auto open, if not you can navigate to:
 
   [http://localhost:3000/](http://localhost:3000/)
 
+### Running Local DynamoDB
+If you would like to run the local DynamoDB (instead of the default DiskDB) to test changes to that integration:
+
+1. Within the server directory and before starting the server run the following command (make sure to uncomment the necessary exports within your env file first).
+
+```bash
+$ make start_db
+```
 
 ## Deploying Listo into Production
 
@@ -88,7 +86,6 @@ We have a separate build repo internally that picks up this repo and deploys Lis
 
 + Sample questions and checklists can be found in the [data directory](data/).
 + Listo was influenced by [goSDL](https://github.com/slackhq/goSDL).
-+ 
 
 ## License
 
