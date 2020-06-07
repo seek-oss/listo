@@ -4,7 +4,8 @@ import { Repository } from './types';
 import {
   ProjectModel,
   QuickChecklistModel,
-  isProject,
+  isValidProject,
+  isValidQuickChecklist,
 } from '../../frontend/src/types';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
@@ -95,7 +96,7 @@ export class Dynamo implements Repository {
     const data = await this.db.get(params).promise();
     const project = <ProjectModel>data.Item;
 
-    if (!project || !isProject(project)) {
+    if (!isValidProject(project)) {
       throw 'Project not found';
     }
 
@@ -113,7 +114,7 @@ export class Dynamo implements Repository {
     const data = await this.db.get(params).promise();
     const quickChecklist = <QuickChecklistModel>data.Item;
 
-    if (!quickChecklist || isProject(quickChecklist)) {
+    if (!isValidQuickChecklist(quickChecklist)) {
       throw 'Checklist not found';
     }
 

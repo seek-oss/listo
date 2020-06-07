@@ -86,7 +86,7 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
     }
   });
 
-  apiRouter.post('/createBoard', async (req, res) => {
+  apiRouter.post('/project', async (req, res) => {
     const inputData = addMandatoryModules(
       req.body as AssessmentResult,
       listoData,
@@ -189,7 +189,7 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
     }
   });
 
-  apiRouter.get('/quickChecklist/:id', async (req, res) => {
+  apiRouter.get('/quick-checklist/:id', async (req, res) => {
     try {
       const quickChecklist = await db.getQuickChecklist(req.params.id);
       res.json({ quickChecklist: quickChecklist, status: 200 });
@@ -199,7 +199,7 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
     }
   });
 
-  apiRouter.post('/upsertQuickChecklist', async (req, res) => {
+  apiRouter.put('/quick-checklist', async (req, res) => {
     let id = null;
 
     try {

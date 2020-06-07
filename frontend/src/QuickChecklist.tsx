@@ -33,8 +33,8 @@ export const QuickChecklist = (props: QuickChecklistProps) => {
   
   const save = async () => {
     try {
-      const res = await fetch(`${API_URL}/upsertQuickChecklist`, {
-        method: 'POST',
+      const res = await fetch(`${API_URL}/quick-checklist`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -53,7 +53,7 @@ export const QuickChecklist = (props: QuickChecklistProps) => {
     const fetchData = async () => {
       try {
         if(!id) return;
-        const res = await fetch(`${API_URL}/quickChecklist/${id}`, {
+        const res = await fetch(`${API_URL}/quick-checklist/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

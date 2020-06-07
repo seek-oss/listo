@@ -101,7 +101,7 @@ const TEST_DATA_CREATE = {
     }
 
     if (program.createBoard) {
-      const url = 'http://localhost:8000/api/createBoard';
+      const url = 'http://localhost:8000/api/project';
       const data = TEST_DATA_CREATE;
       const date = new Date(Date.now());
       data.projectMetaResponses.boardName = `Board_${date

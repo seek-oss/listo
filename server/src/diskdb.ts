@@ -4,7 +4,8 @@ import { Repository } from './types';
 import {
   ProjectModel,
   QuickChecklistModel,
-  isProject,
+  isValidProject,
+  isValidQuickChecklist,
 } from '../../frontend/src/types';
 import * as lockfile from 'proper-lockfile';
 
@@ -63,7 +64,7 @@ export class Disk implements Repository {
   public async update(projectId: string, boardLink: string): Promise<string> {
     const project = this.db.get(projectId);
 
-    if (!project || !isProject(project)) {
+    if (!isValidProject(project)) {
       throw `Can't find project with id: ${projectId}`;
     }
 
@@ -79,7 +80,7 @@ export class Disk implements Repository {
   public async get(projectId: string): Promise<ProjectModel> {
     const project = this.db.get(projectId);
 
-    if (!project || !isProject(project)) {
+    if (!isValidProject(project)) {
       throw `Can't find project with id: ${projectId}`;
     }
 
@@ -89,7 +90,7 @@ export class Disk implements Repository {
   public async getQuickChecklist(id: string): Promise<QuickChecklistModel> {
     const quickChecklist = this.db.get(id);
 
-    if (!quickChecklist || isProject(quickChecklist)) {
+    if (!isValidQuickChecklist(quickChecklist)) {
       throw `Can't find QuickChecklist with id: ${id}`;
     }
 
