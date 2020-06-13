@@ -65,6 +65,10 @@ export const useStyles = makeStyles(theme => ({
     alignSelf: 'start',
     paddingTop: '14px',
   },
+  checkboxIcon: {
+    alignSelf: 'baseline',
+    paddingTop: '14px',
+  },
   questionIcon: {
     paddingRight: '10px',
   },

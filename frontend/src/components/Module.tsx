@@ -1,31 +1,25 @@
-import React, { Fragment, useContext } from 'react';
+import React, {  useContext } from 'react';
 import {
   Checkbox,
   FormControlLabel,
   Typography,
-  List,
-  ListItem,
   Box,
   Chip,
+  ExpansionPanelSummary,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  Grid,
 } from '@material-ui/core';
 import { Module } from '../types';
 import { HandleClickCheckbox, AppContext } from '../context';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import PanoramaFishEyeIcon from '@material-ui/icons/PanoramaFishEye';
-import {
-  useStyles,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-} from '../styles';
 import ReactMarkdown from 'react-markdown';
 import {
   getNumberOfAnsweredQuestions,
   getNumberOfCheckListItems,
-  getSupportedTools,
-  getSelectedTools,
 } from '../utils/moduleHelpers';
+import Checklists from './Checklists';
+import { useStyles } from '../styles';
 
 interface Props {
   moduleObject: Module;
@@ -44,8 +38,6 @@ const ModuleComponent = ({
 }: Props) => {
   const { tools } = useContext(AppContext);
   const classes = useStyles();
-
-  const selectedTools = getSelectedTools(tools);
 
   const numberOfAnsweredQuestions = getNumberOfAnsweredQuestions(
     moduleObject,
@@ -105,58 +97,24 @@ const ModuleComponent = ({
           </Typography>
         </Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
-        <List dense={true}>
-        {moduleObject.guidance ?
-          (
-            <Typography paragraph gutterBottom >
+      <ExpansionPanelDetails >
+        <Grid
+          container
+          direction="column"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
+          {moduleObject.guidance ?
+            (
+              <Typography paragraph gutterBottom >
                 <ReactMarkdown source={moduleObject.guidance} />
-            </Typography>
-          ) : null
-        }
-          {Object.entries(moduleObject.checkLists || []).map(
-            ([key, checkLists]) => {
-              return (
-                <Fragment key={key}>
-                  <Typography>{key}</Typography>
-                  {checkLists.map(checkListItem => {
-                    const toolsSupported = getSupportedTools(
-                      checkListItem,
-                      selectedTools,
-                    );
-                    return (
-                      <ListItem key={checkListItem.question}>
-                        <div className={classes.checklistQuestion}>
-                          {toolsSupported.length > 0 ? (
-                            <CheckCircleOutlineIcon
-                              className={classes.questionIcon}
-                            />
-                          ) : (
-                              <PanoramaFishEyeIcon
-                                className={classes.questionIcon}
-                              />
-                            )}
-                        </div>
-                        <Box>
-                          <ReactMarkdown source={checkListItem.question} />
-                          <div className={classes.toolsWrapper}>
-                            {toolsSupported.map((tool, index) => (
-                              <Chip
-                                key={index}
-                                className={classes.toolChip}
-                                label={tool}
-                              />
-                            ))}
-                          </div>
-                        </Box>
-                      </ListItem>
-                    );
-                  })}
-                </Fragment>
-              );
-            },
-          )}
-        </List>
+              </Typography>
+            ) : null
+          }
+        
+        <Checklists checklists={moduleObject.checkLists} readOnlyMode={true}/>
+
+        </Grid>
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );

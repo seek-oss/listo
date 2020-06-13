@@ -8,6 +8,7 @@ node_modules/
 /build
 server/build
 frontend/build
+frontend/data-schema.json
 
 # misc
 .vscode

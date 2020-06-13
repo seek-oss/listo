@@ -29,3 +29,8 @@ export SLACK_TARGET_CHANNEL='#listo'
 
 # OPTIONAL - Server URL, e.g. if the server hosting listo is fronted by a load balancer or reverse proxy
 # export SERVER_URL='https://example.com'
+
+# OPTIONAL - Uncomment you would like to run the local Dynamodb database instead of the Diskdb.
+# export LISTO_DATABASE='Dynamo' 
+# export CREATE_DYNAMO_TABLES=true
+# export DYNAMO_DB_ENDPOINT=http://localhost:9000

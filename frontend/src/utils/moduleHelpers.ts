@@ -1,5 +1,9 @@
-import { ModuleCategory } from './../types/index';
-import { Tools, CheckList, Module } from '../types';
+import { ModuleCategory, ModuleCategories } from './../types/index';
+import { Tools, ChecklistItem, Module } from '../types';
+
+const getAllChecklistItems = (m: Module) => {
+  return Object.values(m.checkLists).flatMap(checklist => Object.values(checklist)).flat();
+};
 
 export const getSelectedTools = (tools: Tools) => {
   return Object.keys(tools).flatMap(toolCategory =>
@@ -10,7 +14,7 @@ export const getSelectedTools = (tools: Tools) => {
 };
 
 export const getSupportedTools = (
-  checkListItem: CheckList,
+  checkListItem: ChecklistItem,
   selectedTools: string[],
 ): string[] => {
   if (!checkListItem.tools) {
@@ -25,24 +29,42 @@ export const getNumberOfAnsweredQuestions = (m: Module, tools: Tools) => {
   }
 
   const selectedTools = getSelectedTools(tools);
+  const allChecklistItems = getAllChecklistItems(m);
 
-  return Object.values(m.checkLists)
-    .flatMap(checkListItems =>
-      checkListItems.map(item => {
-        return getSupportedTools(item, selectedTools).length > 0;
-      }),
-    )
+  return allChecklistItems.map(checklistItem => {
+    return getSupportedTools(checklistItem, selectedTools).length > 0;
+  })
     .filter(isAnswered => isAnswered).length;
 };
+
 
 export const getNumberOfCheckListItems = (m: Module) => {
   if (!m.checkLists) {
     return 0;
   }
-
-  return Object.values(m.checkLists).flatMap(checklists => checklists).length;
+  return getAllChecklistItems(m).length;
 };
 
-// Ideally we'd store the category title in the data. This isn't ideal
 export const getCategoryName = (categoryData: ModuleCategory) =>
   Object.values(categoryData)[0].category;
+
+export const getModuleDescription = (m: Module) => { 
+  if(!m) return "";
+  const description = [m.assessmentQuestion];
+  const resources = m.resources;
+  const moduleDescription = m.guidance;
+
+  if(moduleDescription) description.push('', '#### Guidance:', '', moduleDescription);
+
+  if (resources) {
+    description.push('', '#### Resources:', '');
+    description.push(...resources.map(resource => `+ ${resource}`));
+  }
+
+  return description.join('\n');
+}
+export const getModule = (categories: ModuleCategories, categoryName: string, moduleName: string) => {
+  if(!categories || !Object.entries(categories).length) return undefined;
+  const moduleCategory = categories[categoryName];
+  return moduleCategory ? moduleCategory[moduleName] : undefined;
+}

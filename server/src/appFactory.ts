@@ -4,9 +4,10 @@ import * as slack from './slack';
 import * as cors from 'cors';
 import {
   DirectoryData,
-  Result,
+  AssessmentResult,
   Meta,
-  DatabaseModel,
+  ProjectModel,
+  QuickChecklistModel,
 } from '../../frontend/src/types';
 import { Repository } from './types';
 const path = require('path');
@@ -16,7 +17,7 @@ const {
   SLACK_CHANNEL_LINK,
   SLACK_TARGET_CHANNEL,
   TRELLO_BOARD_LINK,
-  SERVER_URL
+  SERVER_URL,
 } = process.env;
 
 function buildProjectURL(
@@ -25,14 +26,16 @@ function buildProjectURL(
   projectId: string,
 ): string {
   // Support a custom URL, e.g. if listo is behind a reverse proxy
-  const authority = SERVER_URL ? SERVER_URL.replace(/\/$/, '') : `${scheme}://${host}`;
+  const authority = SERVER_URL
+    ? SERVER_URL.replace(/\/$/, '')
+    : `${scheme}://${host}`;
   return `${authority}/project/${projectId}`;
 }
 
 function addMandatoryModules(
-  inputData: Result,
+  inputData: AssessmentResult,
   listodata: DirectoryData,
-): Result {
+): AssessmentResult {
   const categories = listodata.data.modules;
   for (let categoryKey of Object.keys(categories)) {
     const modules = categories[categoryKey];
@@ -83,13 +86,16 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
     }
   });
 
-  apiRouter.post('/createBoard', async (req, res) => {
-    const inputData = addMandatoryModules(req.body as Result, listoData);
+  apiRouter.post('/project', async (req, res) => {
+    const inputData = addMandatoryModules(
+      req.body as AssessmentResult,
+      listoData,
+    );
     let board = null;
     let projectId = null;
 
     try {
-      const project: DatabaseModel = { metaData: inputData };
+      const project: ProjectModel = { metaData: inputData };
       projectId = await db.create(project);
     } catch (err) {
       throw new Error(
@@ -181,6 +187,34 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
       console.error(`Failed to find project with ${req.params.id}`, err);
       res.status(404).send(`Project not found`);
     }
+  });
+
+  apiRouter.get('/quick-checklist/:id', async (req, res) => {
+    try {
+      const quickChecklist = await db.getQuickChecklist(req.params.id);
+      res.json({ quickChecklist: quickChecklist, status: 200 });
+    } catch (err) {
+      console.error(`Failed to find QuickChecklist with ${req.params.id}`, err);
+      res.status(404).send(`QuickChecklist not found`);
+    }
+  });
+
+  apiRouter.put('/quick-checklist', async (req, res) => {
+    let id = null;
+
+    try {
+      const quickChecklist = req.body as QuickChecklistModel;
+      id = await db.upsertQuickChecklist(quickChecklist);
+    } catch (err) {
+      throw new Error(
+        `Failed to store Quickchecklist with ID ${id} in the database: ${err}.`,
+      );
+    }
+    res.json({
+      id: id,
+      details: 'Listo QuickChecklist Saved Successfully',
+      status: 200,
+    });
   });
 
   app.use('/api', apiRouter);

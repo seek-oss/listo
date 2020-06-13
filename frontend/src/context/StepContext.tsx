@@ -93,7 +93,7 @@ export const StepProvider: React.FC = ({ children }) => {
 
     if (isStep(activeStep, SUMMARY_STEP)) {
       try {
-        const res = await fetch(`${API_URL}/createBoard`, {
+        const res = await fetch(`${API_URL}/project`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

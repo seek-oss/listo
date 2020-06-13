@@ -1,4 +1,4 @@
-import { DirectoryData, Result } from '../../frontend/src/types';
+import { DirectoryData, AssessmentResult } from '../../frontend/src/types';
 import { URL } from 'url';
 import fetch from 'node-fetch';
 import * as AWS from 'aws-sdk';
@@ -228,7 +228,7 @@ export async function createCheckLists(cards: TrelloCard[]): Promise<any[]> {
 
 export async function createFullBoard(
   name: string,
-  inputData: Result,
+  inputData: AssessmentResult,
   listoData: DirectoryData,
 ): Promise<any> {
   const board = await createBoard(name);

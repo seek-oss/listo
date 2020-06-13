@@ -9,7 +9,7 @@ checkLists:
     - question: We have considered how to provide sensible access control to customers, database users and systems, [via the principle of least privilege](https://searchsecurity.techtarget.com/definition/principle-of-least-privilege-POLP).
     - question: We have setup [audit logs](https://logz.io/blog/audit-logs-security-compliance/) and are forwarding them via our central log forwarder.
     - question: We have read the [Data Classification Policy]() to determine if our data is classified as sensitive.
-  Sensitive_Data:
+  Sensitive Data:
     - question: Data is encrypted at rest and in flight.
     - question: Data is anonymised before it's sent to consuming services that do not require it.
     - question: Not stored in any non-production environments.

@@ -8,11 +8,12 @@ import { AppContext } from './context';
 import {
   Risk,
   ModuleCategories,
-  ProjectMeta,
+  ProjectMeta, 
   DirectoryData,
-  Result,
   Tools,
+  AssessmentResult,
   Meta,
+  Checklists,
 } from './types';
 import { Router } from '@reach/router';
 import { Home } from './Home';
@@ -27,6 +28,8 @@ import { handleRiskAnswer } from './utils/handleRiskAnswer';
 import { prepareProjectMeta } from './utils/prepareProjectMeta';
 import { getSelectedTools } from './utils/moduleHelpers';
 import { API_URL } from './constants';
+import { QuickChecklist } from './QuickChecklist';
+import { SearchChecklists } from './SearchChecklists';
 
 const App: React.FC = ({ children }) => {
   const classes = useStyles();
@@ -36,6 +39,17 @@ const App: React.FC = ({ children }) => {
   const [risks, setRisks] = useState<Risk[]>([]);
   const [tools, setTools] = useState<Tools>({});
   const [meta, setMeta] = useState<Meta>({});
+  const [quickChecklist, setQuickChecklist] = useState<Checklists>({});
+
+  const handleSelectChecklistItem = (checklistName: string, checklistItemIndex: number, checked: boolean) => {
+    const clonedChecklist = cloneDeep(quickChecklist);
+    clonedChecklist[checklistName][checklistItemIndex].checked = checked;
+    setQuickChecklist(clonedChecklist);
+  };
+
+  const initQuickChecklist = (checklists: Checklists) => {
+    setQuickChecklist(checklists);
+  };
 
   const handleSelectTool = (tool: string, category: string, value: boolean) => {
     const clonedTools = cloneDeep(tools);
@@ -62,7 +76,7 @@ const App: React.FC = ({ children }) => {
     }
   };
 
-  const prepareResult = (): Result => {
+  const prepareResult = (): AssessmentResult => {
     return {
       selectedRisks: getSelectedRisks(risks),
       selectedModulesByCategory: pickCategoriesWithResponse(categories),
@@ -73,14 +87,17 @@ const App: React.FC = ({ children }) => {
 
   const contextValue = {
     projectMeta,
-    handleUpdateProjectMeta,
     categories,
     risks,
     tools,
+    quickChecklist,
+    initQuickChecklist,
+    handleSelectChecklistItem,
+    handleUpdateProjectMeta,
     handleSelectModule,
     handleRiskAnswer: handleRiskAnswer(risks, setRisks),
-    prepareResult,
     handleSelectTool,
+    prepareResult,
   };
 
   useEffect(() => {
@@ -116,6 +133,9 @@ const App: React.FC = ({ children }) => {
                 <Faq path="/faq" listoMeta={meta} />
                 <Assessment path="/assessment" />
                 <Project path="project/:projectId" listoMeta={meta} />
+                <QuickChecklist path="checklist/:categoryName/:moduleName"/>
+                <QuickChecklist path="checklist/:categoryName/:moduleName/:id"/>
+                <SearchChecklists path="/checklists"/>
               </Router>
             </Paper>
           </main>

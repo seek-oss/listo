@@ -1,6 +1,6 @@
-import { ModuleCategories } from './../types/index';
+import { ModuleCategories, Checklists } from './../types/index';
 import React from 'react';
-import { Risk, ProjectMeta, Result, Tools } from '../types';
+import { Risk, ProjectMeta, AssessmentResult, Tools } from '../types';
 
 export type HandleClickCheckbox = (
   moduleKey: string,
@@ -25,17 +25,23 @@ const initialContext = {
   categories: {} as ModuleCategories,
   risks: [] as Risk[],
   tools: {} as Tools,
+  quickChecklist: {} as Checklists,
+  initQuickChecklist: (checklists: Checklists) => {},
+  handleSelectChecklistItem: (
+    checklistName: string,
+    checklistItemIndex: number,
+    checked: boolean) => { },
   handleSelectModule: (
     categoryKey: string,
     moduleKey: string,
     value: boolean,
-  ) => {},
+  ) => { },
   handleRiskAnswer: (index: number) => (
     _: React.ChangeEvent<{}>,
     value: string,
-  ) => {},
-  handleSelectTool: (tool: string, category: string, value: boolean) => {},
-  prepareResult: (): Result => ({
+  ) => { },
+  handleSelectTool: (tool: string, category: string, value: boolean) => { },
+  prepareResult: (): AssessmentResult => ({
     selectedModulesByCategory: {},
     selectedRisks: [],
     projectMetaResponses: {},

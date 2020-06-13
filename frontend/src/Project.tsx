@@ -9,11 +9,11 @@ import {
   ListItem,
 } from '@material-ui/core';
 import {
-  Result,
+  AssessmentResult,
   PickedCategories,
   ProjectMetaResponses,
   Meta,
-  DatabaseModel
+  ProjectModel
 } from './types/index';
 
 interface ProjectProps extends RouteComponentProps {
@@ -35,7 +35,7 @@ export const Project = (props: ProjectProps) => {
   let projectId = props.projectId;
 
   const prepareProjectData = (
-    projectResult: Result,
+    projectResult: AssessmentResult,
     boardLink: string,
     createdAt: string,
   ) => {
@@ -57,8 +57,8 @@ export const Project = (props: ProjectProps) => {
 
         if (res.status !== 200) throw new Error('Project not found');
         const data = await res.json();
-        const project: DatabaseModel = data.project;
-        const projectResult: Result = project.metaData;
+        const project: ProjectModel = data.project;
+        const projectResult: AssessmentResult = project.metaData;
         prepareProjectData(
           projectResult,
           project.boardLink || "",

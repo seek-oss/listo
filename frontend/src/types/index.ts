@@ -19,7 +19,7 @@ export interface PickedCategories {
   [category: string]: string[];
 }
 
-export interface Result {
+export interface AssessmentResult {
   selectedModulesByCategory: PickedCategories;
   selectedRisks: RiskSelection[];
   projectMetaResponses: ProjectMetaResponses;
@@ -61,15 +61,20 @@ export interface Module {
   guidance?: string;
   response?: boolean; // User's response
   minimumRisk?: string;
-  checkLists?: { [key: string]: CheckList[] };
+  checkLists: Checklists;
   tags?: string;
   resources?: string[];
 }
 
-export interface CheckList {
+export interface Checklists {
+  [checklistName: string]: ChecklistItem[];
+}
+
+export interface ChecklistItem {
   question: string;
   key?: string;
   tools?: string[];
+  checked?: boolean; // User's response
 }
 
 interface ProjectTypes {
@@ -102,8 +107,43 @@ export interface DirectoryData {
 
 export interface DatabaseModel {
   id?: string;
-  metaData: Result;
-  boardLink?: string;
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface ProjectModel extends DatabaseModel {
+  metaData: AssessmentResult;
+  boardLink?: string; // Trello Board URL
+}
+
+export interface QuickChecklistModel extends DatabaseModel{
+  checkList: Checklists;
+  projectId?: string; // We might use this in the future to link quick checklists to projects.
+}
+
+
+export const isValidProject = (
+  projectOrChecklist?: ProjectModel | QuickChecklistModel,
+): projectOrChecklist is ProjectModel => {
+
+  if(!projectOrChecklist) return false;
+
+  if ((projectOrChecklist as ProjectModel).metaData) {
+    return true;
+  }
+
+  return false;
+};
+
+export const isValidQuickChecklist = (
+  projectOrChecklist?: ProjectModel | QuickChecklistModel,
+): projectOrChecklist is QuickChecklistModel => {
+
+  if(!projectOrChecklist) return false;
+
+  if ((projectOrChecklist as QuickChecklistModel).checkList) {
+    return true;
+  }
+
+  return false;
+};
