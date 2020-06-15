@@ -9,7 +9,7 @@ ADD server server
 ADD frontend frontend
 
 RUN cd server && yarn run build ; cd ..
-RUN cd frontend && REACT_APP_API_URL=/api yarn run build ; cd ..
+RUN cd frontend && REACT_APP_API_URL=/api yarn run build ; yarn run build:schema ; cd ..
 
 FROM node:10-slim
 

@@ -120,30 +120,3 @@ export interface QuickChecklistModel extends DatabaseModel{
   checkList: Checklists;
   projectId?: string; // We might use this in the future to link quick checklists to projects.
 }
-
-
-export const isValidProject = (
-  projectOrChecklist?: ProjectModel | QuickChecklistModel,
-): projectOrChecklist is ProjectModel => {
-
-  if(!projectOrChecklist) return false;
-
-  if ((projectOrChecklist as ProjectModel).metaData) {
-    return true;
-  }
-
-  return false;
-};
-
-export const isValidQuickChecklist = (
-  projectOrChecklist?: ProjectModel | QuickChecklistModel,
-): projectOrChecklist is QuickChecklistModel => {
-
-  if(!projectOrChecklist) return false;
-
-  if ((projectOrChecklist as QuickChecklistModel).checkList) {
-    return true;
-  }
-
-  return false;
-};
