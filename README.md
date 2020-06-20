@@ -1,5 +1,8 @@
+
+
 ![Logo](logo.png)
 
+[![Known Vulnerabilities Frontend](https://snyk.io/test/github/seek-oss/listo/badge.svg?targetFile=frontend/package.json)](https://snyk.io/test/github/seek-oss/listo?targetFile=frontend/package.json) [![Known Vulnerabilities Server](https://snyk.io/test/github/seek-oss/listo/badge.svg?targetFile=server/package.json)](https://snyk.io/test/github/seek-oss/listo?targetFile=server/package.json)
 
 Use questionnaires and checklists to make it easy to do the right thing, regarding the software you build.
 
