@@ -8,7 +8,7 @@
     "@material-ui/icons": "^4.2.1",
     "@material-ui/lab": "^4.0.0-alpha.33",
     "@reach/router": "^1.2.1",
-    "@types/node": "^12.12.44",
+    "@types/node": "^12.12.48",
     "global": "^4.4.0",
     "lodash.clonedeep": "^4.5.0",
     "react": "^16.8.6",
