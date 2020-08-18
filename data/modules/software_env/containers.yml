@@ -7,7 +7,7 @@ checkLists:
     tools:
       - Gantry
   - question: We have scanned our currently deployed images for vulnerabilities using [AWS ECR Image Scanning](https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning.html).
-  - question: We have triaged and created a remediation plan for all high vulnerabilities identified by AWS ECR Image Scanning.git
+  - question: We have triaged and created a remediation plan for all high vulnerabilities identified by AWS ECR Image Scanning
   General:
   - question: We use a minimal Docker image for our containers to reduce the attack surface (e.g. Alpine vs Ubuntu).
   - question: We have reduced the attack surface further by installing only the packages we need or have considered [Distroless Docker Images](https://github.com/GoogleContainerTools/distroless).
