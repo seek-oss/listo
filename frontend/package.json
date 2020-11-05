@@ -13,7 +13,7 @@
     "lodash.clonedeep": "^4.5.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-markdown": "^4.2.2"
+    "react-markdown": "^5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
