@@ -1,10 +1,7 @@
 import { promises as fs } from 'fs';
 import * as uuid from 'uuid';
 import { Repository, isValidProject, isValidQuickChecklist } from './types';
-import {
-  ProjectModel,
-  QuickChecklistModel,
-} from '../../frontend/src/types';
+import { ProjectModel, QuickChecklistModel } from '../../frontend/src/types';
 import * as lockfile from 'proper-lockfile';
 
 export class Disk implements Repository {

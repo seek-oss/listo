@@ -1,10 +1,7 @@
 import * as AWS from 'aws-sdk';
 import * as uuid from 'uuid';
 import { Repository, isValidProject, isValidQuickChecklist } from './types';
-import {
-  ProjectModel,
-  QuickChecklistModel,
-} from '../../frontend/src/types';
+import { ProjectModel, QuickChecklistModel } from '../../frontend/src/types';
 import { ServiceConfigurationOptions } from 'aws-sdk/lib/service';
 
 export class Dynamo implements Repository {

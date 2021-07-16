@@ -99,8 +99,8 @@ export const Project = (props: ProjectProps) => {
         <Box>
           <Typography variant="subtitle1">
             <p>
-              Thanks for submitting your details, we've created your Trello
-              board containing checklists for your project here:
+              Thanks for submitting your details, we've created the tasks
+               containing checklists for your project here: 
               <a href={projectMetaResponses.boardLink}>
                 {projectMetaResponses.boardLink}
               </a>

@@ -14,8 +14,7 @@ export interface Repository {
 export const isValidProject = (
   projectOrChecklist?: ProjectModel | QuickChecklistModel,
 ): projectOrChecklist is ProjectModel => {
-
-  if(!projectOrChecklist) return false;
+  if (!projectOrChecklist) return false;
 
   if ((projectOrChecklist as ProjectModel).metaData) {
     return true;
@@ -27,8 +26,7 @@ export const isValidProject = (
 export const isValidQuickChecklist = (
   projectOrChecklist?: ProjectModel | QuickChecklistModel,
 ): projectOrChecklist is QuickChecklistModel => {
-
-  if(!projectOrChecklist) return false;
+  if (!projectOrChecklist) return false;
 
   if ((projectOrChecklist as QuickChecklistModel).checkList) {
     return true;

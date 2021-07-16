@@ -7,6 +7,7 @@ services:
     environment:
       - DATA_DIR=/etc/listo/data
       - DISK_PATH=/opt/listo/db.json
+      - TRELLO_JIRA_MODE
       - TRELLO_API_KEY
       - TRELLO_TOKEN
       - TRELLO_TEAM

@@ -34,7 +34,7 @@ export const Home = (props: HomeProps) => {
         </Grid>
         <Grid item xs={12}>
           <Typography variant="body1" gutterBottom>
-            At the end of the review we’ll provide a link to a Trello board
+            At the end of the review we’ll provide a link to a Trello board or JIRA Task
             which contains the checklists for your project.{' '}
             {isTrelloBoard && (
               <a

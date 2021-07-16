@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as trello from './trello';
+import * as jira from './jira';
 import * as slack from './slack';
 import * as cors from 'cors';
 import {
@@ -11,12 +12,14 @@ import {
 } from '../../frontend/src/types';
 import { Repository } from './types';
 const path = require('path');
+const TRELLO_JIRA_MODE = process.env.TRELLO_JIRA_MODE || 'JIRA';
 
 const {
   FRONTEND_ASSETS_PATH,
   SLACK_CHANNEL_LINK,
   SLACK_TARGET_CHANNEL,
   TRELLO_BOARD_LINK,
+  JIRA_ISSUE_LINK,
   SERVER_URL,
 } = process.env;
 
@@ -86,24 +89,11 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
     }
   });
 
-  apiRouter.post('/project', async (req, res) => {
-    const inputData = addMandatoryModules(
-      req.body as AssessmentResult,
-      listoData,
-    );
-    let board = null;
-    let projectId = null;
 
+  async function pushToTrello(inputData, req, projectId){
+    let board;
     try {
-      const project: ProjectModel = { metaData: inputData };
-      projectId = await db.create(project);
-    } catch (err) {
-      throw new Error(
-        `Failed to store project ${projectId} in the database: ${err}.`,
-      );
-    }
 
-    try {
       board = await trello.createFullBoard(
         inputData.projectMetaResponses.boardName,
         inputData,
@@ -137,6 +127,36 @@ async function appFactory(db: Repository, listoData: DirectoryData) {
         `Failed to add Trello user with email ${inputData.projectMetaResponses.trelloEmail} to project ${projectId}: ${err}.`,
       );
     }
+    return board;
+  }
+
+  apiRouter.post('/project', async (req, res) => {
+    const inputData = addMandatoryModules(
+      req.body as AssessmentResult,
+      listoData,
+    );
+    let board = null;
+    let projectId = null;
+
+    try {
+      const project: ProjectModel = { metaData: inputData };
+      projectId = await db.create(project);
+    } catch (err) {
+      throw new Error(
+        `Failed to store project ${projectId} in the database: ${err}.`,
+      );
+    }
+    switch(TRELLO_JIRA_MODE){
+      case "JIRA":
+        console.log("Pushing to JIRA");
+        board = await jira.createJIRATasks(inputData,listoData,projectId);
+        break;
+      case "TRELLO":
+        console.log("Pushing to Trello");
+        board = await pushToTrello(inputData,req,projectId);
+        break;
+    }
+
 
     try {
       await db.update(projectId, board.shortUrl);

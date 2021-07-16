@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "jira-client": "^6.21.1",
     "js-yaml": "^3.13.1",
     "node-fetch": "^2.6.1",
     "object-path-immutable": "^3.1.1",
