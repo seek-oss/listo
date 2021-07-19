@@ -19,7 +19,7 @@
   label: A link to find out more (code or documentation)
   type: input
 - name: trelloEmail
-  placeholder: 'mytrello@email.com'
+  placeholder: 'jdoe or johndoe@email.com'
   required: true
-  label: The email address of your Trello account
+  label: The email or username of your Trello/JIRA account
   type: input

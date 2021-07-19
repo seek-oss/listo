@@ -12,6 +12,10 @@ services:
       - TRELLO_TOKEN
       - TRELLO_TEAM
       - TRELLO_BOARD_LINK
+      - JIRA_HOST
+      - JIRA_USER
+      - JIRA_PASSWORD
+      - JIRA_PROJECT
       - SLACK_CHANNEL_LINK
       - SLACK_TARGET_CHANNEL
       - SLACK_WEB_HOOK
