@@ -3,11 +3,16 @@ version: '3'
 services:
   listo:
     image: listo
-    build: .
+    build:
+      context: .
+      args:
+        REACT_APP_TRELLO_JIRA_MODE: $REACT_APP_TRELLO_JIRA_MODE
     environment:
       - DATA_DIR=/etc/listo/data
       - DISK_PATH=/opt/listo/db.json
+      - REACT_APP_API_URL
       - TRELLO_JIRA_MODE
+      - REACT_APP_TRELLO_JIRA_MODE
       - TRELLO_API_KEY
       - TRELLO_TOKEN
       - TRELLO_TEAM
@@ -19,6 +24,7 @@ services:
       - SLACK_CHANNEL_LINK
       - SLACK_TARGET_CHANNEL
       - SLACK_WEB_HOOK
+
     volumes:
         - ./data:/etc/listo/data:ro
     ports:

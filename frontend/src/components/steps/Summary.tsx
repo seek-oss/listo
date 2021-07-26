@@ -17,7 +17,7 @@ import { useStyles } from '../../styles';
 
 const Summary = () => {
   const classes = useStyles({});
-  const { projectMeta, categories } = useContext(AppContext);
+  const { projectMeta, categories, maturity } = useContext(AppContext);
 
   const filteredCategories = selectedCategories(categories);
 
@@ -43,6 +43,19 @@ const Summary = () => {
               />
             </ListItem>
           ))}
+        </List>
+
+        <List dense={true}>
+          {maturity.map(m => (
+            m.options.filter(x=>x.selected).map(op => (            
+            <ListItem key={op.maturity}>
+              <ListItemText
+                primary={"Your project maturity"}
+                secondary={op.maturity}
+              />
+            </ListItem>)
+
+          )))}
         </List>
 
         <Typography variant="h6" gutterBottom>

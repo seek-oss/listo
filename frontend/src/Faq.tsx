@@ -2,6 +2,7 @@ import { RouteComponentProps } from '@reach/router';
 import React from 'react';
 import { Typography, Grid } from '@material-ui/core';
 import { Meta } from './types';
+import { TRELLO_JIRA_MODE, API_URL } from './constants';
 
 interface FaqProps extends RouteComponentProps {
   listoMeta: Meta;
@@ -24,8 +25,8 @@ export const Faq = (props: FaqProps) => (
         <Typography variant="body1" gutterBottom>
           Unfortunately, it isn’t possible to modify project details yourself.
           However, all the information collected during the process will be
-          reflected on the generated Trello board. You should be granted edit
-          access to your Trello board which means the project information can be
+          reflected on the generated {TRELLO_JIRA_MODE} board. You should be granted edit
+          access to your {TRELLO_JIRA_MODE} board which means the project information can be
           updated there.
         </Typography>
       </Grid>
@@ -34,7 +35,7 @@ export const Faq = (props: FaqProps) => (
           How do I find the link to my board?
         </Typography>
         <Typography variant="body1" gutterBottom>
-          The easiest way to find the link to your Trello board is by visiting
+          The easiest way to find the link to your {TRELLO_JIRA_MODE} board is by visiting
           the {props.listoMeta.slackChannel} Slack channel if you created it
           recently. If you can’t find your board there, reach out in{' '}
           {props.listoMeta.slackChannel} and the team can help you find the

@@ -23,7 +23,25 @@ export interface AssessmentResult {
   selectedModulesByCategory: PickedCategories;
   selectedRisks: RiskSelection[];
   projectMetaResponses: ProjectMetaResponses;
+  selectedMaturity: MaturitySelection[];
   selectedTools: string[];
+}
+
+export interface Maturity {
+  text: string;
+  description?: string;
+  options: MaturityOption[];
+}
+
+export interface MaturityOption {
+  text: string;
+  maturity?: string;
+  selected?: boolean;
+}
+
+export interface MaturitySelection {
+  text: string;
+  selection: string;
 }
 
 // Risks:
@@ -102,7 +120,10 @@ export interface DirectoryData {
     };
     projectTypes: ProjectTypes[];
     tooling: Tools;
-  };
+    maturity: {
+      questions: Maturity[];
+    };
+  }
 }
 
 export interface DatabaseModel {

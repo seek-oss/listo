@@ -1,0 +1,16 @@
+questions:
+- text: Which stage is your project/feature on ?
+  description: ''
+  options:
+  - text: 'Discovery'
+    maturity: discovery
+  - text: 'Scoping'
+    maturity: scoping
+  - text: 'Design'
+    maturity: design
+  - text: 'Implementation'
+    maturity: implementation
+  - text: 'Pre-deployment'
+    maturity: pre-deployment
+  - text: 'Deployed'
+    maturity: deployed

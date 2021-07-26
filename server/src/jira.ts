@@ -25,25 +25,26 @@ return s.charAt(0).toUpperCase() + s.slice(1)
 
 export async function createJIRATasks(inputdata, listodata, listoProjectId){
 
+
 const projectname = inputdata.projectMetaResponses.boardName;
 const projectdetails = inputdata.projectMetaResponses;
+const selectedMaturity = inputdata.selectedMaturity[0].selection;
+const selectedRisks = inputdata.selectedRisks.filter(x => x.selection != 'No')[0].selection;
+
 const boardname = JIRA_PROJECT;
 const metas = await jira.getIssueCreateMetadata({'projectKeys':[boardname]});
 const jiraproj = await jira.getProject(boardname);
 const workitemmeta = metas.projects[0].issuetypes.filter(x=>x.name == 'Work Item')[0];
 const subtaskmeta = metas.projects[0].issuetypes.filter(x=>x.name == 'Backlog Task')[0];
-const maintask = await createMainTask(workitemmeta, jiraproj, listoProjectId, boardname, listodata, projectname, projectdetails);
+const maintask = await createMainTask(workitemmeta, jiraproj, listoProjectId, boardname, listodata, projectname, projectdetails, selectedRisks,selectedMaturity);
 const subtasks = await createCategorieSubTasks(maintask, boardname, inputdata, listodata, subtaskmeta, jiraproj);
-// for(const cs in subtasks){
-//   await createModuleSubTaskForCategoryTask(subtasks[cs]);
-// }
+
     return {'shortUrl': 'https://'+JIRA_HOST+'/browse/'+maintask.key};
 };
 
 
-async function createMainTask(workitemmeta, jiraproj, listoProjectId, boardname, listodata, projectname, projectdetails){
+async function createMainTask(workitemmeta, jiraproj, listoProjectId, boardname, listodata, projectname, projectdetails, selectedRisks, selectedMaturity){
 try{
-    console.log(JSON.stringify(projectdetails));
     const result = await jira.addNewIssue({
     "fields": {
         "issuetype":{ "id": workitemmeta.id},
@@ -52,12 +53,13 @@ try{
         "assignee":{"name":JIRA_USER},
         "labels": ["listo_"+ projectdetails.riskLevel.split(' ')[0].toLowerCase()],
         "description": 
-        `h2. Details:
-        *Feature name:* ${projectname}
-        *Team Slack channel:* #${projectdetails.slackTeam}
-        *Contact Slack username:* @${projectdetails.slackUserName}
-        *Documentation link:* [${projectdetails.codeLocation}|${projectdetails.codeLocation}]
-        *Jira username:* [~${projectdetails.trelloEmail}]
+        `h3. *Feature name:* ${projectname}
+        h3. *Project maturity:* ${selectedMaturity}
+        h3. *Project risks:* ${selectedRisks}
+        h3. *Team Slack channel:* #${projectdetails.slackTeam}
+        h3. *Contact Slack username:* @${projectdetails.slackUserName}
+        h3. *Documentation link:* [${projectdetails.codeLocation}|${projectdetails.codeLocation}]
+        h3. *Jira username:* [~${projectdetails.trelloEmail}]
         `
     },
     });

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 
 import { useStyles } from '../styles';
 import ProjectMetaGathering from './steps/ProjectMetaGathering';
+import ProjectMaturity from './steps/ProjectMaturity';
 import RiskAssessment from './steps/RiskAssessment';
 import ModuleSelection from './steps/ModuleSelection';
 import Summary from './steps/Summary';
@@ -31,10 +32,11 @@ const FormSteps = () => {
         ))}
       </Stepper>
       {activeStep === 0 && <ProjectMetaGathering />}
-      {activeStep === 1 && <RiskAssessment />}
-      {activeStep === 2 && <ToolingComponent />}
-      {activeStep === 3 && <ModuleSelection />}
-      {activeStep === 4 && <Summary />}
+      {activeStep === 1 && <ProjectMaturity />}
+      {activeStep === 2 && <RiskAssessment />}
+      {activeStep === 3 && <ToolingComponent />}
+      {activeStep === 4 && <ModuleSelection />}
+      {activeStep === 5 && <Summary />}
       <PaginationButtons />
     </React.Fragment>
   );

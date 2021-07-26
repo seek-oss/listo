@@ -5,12 +5,14 @@ import { getRiskLevel } from '../utils';
 
 export type STEP_TYPES =
   | 'Project Details'
+  | 'Project Maturity'
   | 'Risk Assessment'
   | 'Tools'
   | 'Modules'
   | 'Summary';
 
 export const INFO_STEP: STEP_TYPES = 'Project Details';
+export const MATURITY_STEP: STEP_TYPES = 'Project Maturity';
 export const RISK_STEP: STEP_TYPES = 'Risk Assessment';
 export const TOOLS_STEP: STEP_TYPES = 'Tools';
 export const MODULES_STEP: STEP_TYPES = 'Modules';
@@ -18,6 +20,7 @@ export const SUMMARY_STEP: STEP_TYPES = 'Summary';
 
 export const STEPS = [
   INFO_STEP,
+  MATURITY_STEP,
   RISK_STEP,
   TOOLS_STEP,
   MODULES_STEP,
@@ -67,6 +70,10 @@ export const StepProvider: React.FC = ({ children }) => {
       return true;
     }
     if (isStep(activeStep, INFO_STEP)) {
+      // TODO: need to check which ones are required and only check those
+      return true;
+    }
+    if (isStep(activeStep, MATURITY_STEP)) {
       // TODO: need to check which ones are required and only check those
       return true;
     }

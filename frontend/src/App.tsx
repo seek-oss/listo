@@ -8,7 +8,8 @@ import { AppContext } from './context';
 import {
   Risk,
   ModuleCategories,
-  ProjectMeta, 
+  ProjectMeta,
+  Maturity, 
   DirectoryData,
   Tools,
   AssessmentResult,
@@ -23,9 +24,10 @@ import { Project } from './Project';
 import { StepProvider } from './context/StepContext';
 import pickCategoriesWithResponse from './utils/pickCategoriesWithResponse';
 import getSelectedRisks from './utils/getSelectedRisks';
-
+import { handleMaturityAnswer } from './utils/handleMaturityAnswer';
 import { handleRiskAnswer } from './utils/handleRiskAnswer';
 import { prepareProjectMeta } from './utils/prepareProjectMeta';
+import getSelectedMaturity from './utils/getSelectedMaturity';
 import { getSelectedTools } from './utils/moduleHelpers';
 import { API_URL } from './constants';
 import { QuickChecklist } from './QuickChecklist';
@@ -35,6 +37,7 @@ const App: React.FC = ({ children }) => {
   const classes = useStyles();
 
   const [projectMeta, setProjectMeta] = useState<ProjectMeta[]>([]);
+  const [maturity, setProjectMaturity] = useState<Maturity[]>([]);
   const [categories, setCategories] = useState<ModuleCategories>({});
   const [risks, setRisks] = useState<Risk[]>([]);
   const [tools, setTools] = useState<Tools>({});
@@ -79,6 +82,7 @@ const App: React.FC = ({ children }) => {
   const prepareResult = (): AssessmentResult => {
     return {
       selectedRisks: getSelectedRisks(risks),
+      selectedMaturity: getSelectedMaturity(maturity),
       selectedModulesByCategory: pickCategoriesWithResponse(categories),
       projectMetaResponses: prepareProjectMeta(projectMeta, risks),
       selectedTools: getSelectedTools(tools),
@@ -89,11 +93,13 @@ const App: React.FC = ({ children }) => {
     projectMeta,
     categories,
     risks,
+    maturity,
     tools,
     quickChecklist,
     initQuickChecklist,
     handleSelectChecklistItem,
     handleUpdateProjectMeta,
+    handleMaturityAnswer: handleMaturityAnswer(maturity, setProjectMaturity),
     handleSelectModule,
     handleRiskAnswer: handleRiskAnswer(risks, setRisks),
     handleSelectTool,
@@ -107,6 +113,7 @@ const App: React.FC = ({ children }) => {
         const { data }: DirectoryData = await dataRes.json();
         setProjectMeta(data.projectMeta);
         setCategories(data.modules);
+        setProjectMaturity(data.maturity.questions);
         setRisks(data.risks.questions);
         setTools(data.tooling);
 
