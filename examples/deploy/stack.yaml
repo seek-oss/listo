@@ -24,6 +24,18 @@ Parameters:
   TrelloTeam:
     Type: String
 
+  TRELLO_JIRA_MODE:
+    Type: String
+
+  JIRA_USER:
+    Type: String
+
+  JIRA_HOST:
+    Type: String
+
+  JIRA_PROJECT:
+    Type: String
+
   CertificateArn:
     Description: ACM certificate for the load balancer
     Type: String
@@ -182,6 +194,16 @@ Resources:
               Value: !Ref BoardsTable
             - Name: TRELLO_TEAM
               Value: !Ref TrelloTeam
+            - Name: TRELLO_JIRA_MODE
+              Value: !Ref TRELLO_JIRA_MODE
+            - Name: JIRA_HOST
+              Value: !Ref JIRA_HOST
+            - Name: JIRA_USER
+              Value: !Ref JIRA_USER
+            - Name: JIRA_PASSWORD
+              Value: !Ref JIRA_PASSWORD
+            - Name: JIRA_PROJECT
+              Value: !Ref JIRA_PROJECT
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -324,6 +346,12 @@ Resources:
     Properties:
       Name: listo/trello-credentials
       Description: Trello API credentials for Listo
+
+  JIRA_PASSWORD:
+  Type: AWS::SecretsManager::Secret
+  Properties:
+    Name: listo/trello-credentials
+    Description: Trello JIRA password for Listo
 
   SlackWebHookSecret:
     Type: AWS::SecretsManager::Secret

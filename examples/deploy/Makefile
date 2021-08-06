@@ -1,7 +1,7 @@
-DOCKER_REPO_URL = <your AWS account ID>.dkr.ecr.ap-southeast-2.amazonaws.com/listo
+DOCKER_REPO_URL = <your AWS account ID>.dkr.ecr.eu-west-3.amazonaws.com/listo
 
 deploy:
-	docker build github.com/seek-oss/listo -t seek/listo:latest
+	docker build github.com/<yourgithubaccount>/listo -t <yourgithubaccount>/listo:latest
 	docker build --pull=false -t "$(DOCKER_REPO_URL):${BUILD_NUMBER}" .
 	docker push "$(DOCKER_REPO_URL):${BUILD_NUMBER}"
 	aws cloudformation deploy \
@@ -14,6 +14,10 @@ deploy:
 			'PublicSubnetIds=<Your subnet ids>' \
 			'PrivateSubnetIds=<Your subnet ids>' \
 			'TrelloTeam=<Id of your trello team>' \
+			'TRELLO_JIRA_MODE=<JIRA or TRELLO>' \
+			'JIRA_HOST=<Your JIRA FQDN>' \
+			'JIRA_USER=<Your user for the Jira integration>' \
+			'JIRA_PROJECT=<The target JIRA project for Listo>' \
 			'CertificateArn=<ARN of your ACM Certificate for TLS>' \
 			'OidcAuthorizationEndpoint=<Your oidc authz endpoint>' \
 			'OidcClientId=<Your oidc client id>' \
