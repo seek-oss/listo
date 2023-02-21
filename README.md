@@ -4,8 +4,6 @@
 
 Use questionnaires and checklists to make it easy to do the right thing, regarding the software you build.
 
-Want to see Listo in action? Checkout the demo here: [https://listo-demo.herokuapp.com/](https://listo-demo.herokuapp.com/)!
-
 ## About
 
 Checklists are at the heart of Listo, empowering engineering teams to perform a web-based self-assessment, which results in a Trello board containing the essential security, reliability and architecture requirements from our RFCs, tailored to a project's objectives. 
